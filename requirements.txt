@@ -1,0 +1,5 @@
+numpy
+pyopengl
+wxpython
+Pillow
+pycollada
