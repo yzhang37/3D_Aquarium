@@ -10,15 +10,15 @@ import numpy as np
 class Shark(Component, EnvironmentObject):
     """
     Define how the shark model is written.
-    - [ ] TODO: Head
-    - [ ] TODO: Mouth
+    - [x] Head
+    - [x] Mouth
     - [ ] TODO: Eye
-    - [x] TODO: Body
+    - [x] Body
     - [ ] TODO: First dorsal fin
-    - [x] TODO: Tail
-        - [x] TODO: Pectoral fin
-        - [x] TODO: Caudal fin
-        - [x] TODO: Other parts
+    - [ ] TODO: Pectoral fin
+    - [x] Lower Part
+        - [x] Tail
+        - [x] Caudal fin
     """
 
     def __init__(self,
@@ -30,6 +30,7 @@ class Shark(Component, EnvironmentObject):
 
         # define the colors
         SHARK_GREY = Ct.ColorType(0.243, 0.275, 0.376)
+        SHARK_LIGHTGREY = Ct.ColorType(0.302, 0.345, 0.470)
 
         # define the body of the shark
 
@@ -38,6 +39,7 @@ class Shark(Component, EnvironmentObject):
         body = Cube(Point((0, 0, 0)), shaderProg, body_size, SHARK_GREY)
         self.addChild(body)
 
+        # body lower part
         tails_part = []
         cur_size = body_size
         cur_par = body
@@ -66,10 +68,28 @@ class Shark(Component, EnvironmentObject):
 
         caudal_fin2_size = pectoral_fin_size * [0.2, 0.6, 0.8]
         caudal_fin2_pos = pectoral_fin_size * [0, 0, 0.7]
-        caudal_fin2 = Cone(Point(caudal_fin2_pos), shaderProg, caudal_fin2_size, SHARK_GREY)
+        caudal_fin2 = Cone(Point(caudal_fin2_pos), shaderProg, caudal_fin2_size, SHARK_LIGHTGREY)
         caudal_fin2.setCurrentAngle(180, caudal_fin2.vAxis)
         caudal_fin2.setCurrentAngle(-50, caudal_fin2.uAxis)
         pectoral_fin.addChild(caudal_fin2)
+
+        # define the neck part of the shark
+        neck_size = body_size * [0.8, 0.7, 0.5]
+        neck_pos = body_size * [0, 0.1 / 2, (1 + 0.5 - 0.1) / 2]
+        neck = Cube(Point(neck_pos), shaderProg, neck_size, SHARK_GREY)
+        body.addChild(neck)
+
+        # define the head and mouth
+        head_size = neck_size * [0.8, 0.6, 1]
+        head_pos = neck_size * [0, 0.1, (1 + 1 - 0.1) / 2]
+        head = Cube(Point(head_pos), shaderProg, head_size, SHARK_GREY)
+        neck.addChild(head)
+
+        mouth_size = neck_size * [0.65, 0.15, 0.7]
+        mouth_pos = neck_size * [0, -0.25, (1 + 0.7 - 0.1) / 2]
+        mouth = Cube(Point(mouth_pos), shaderProg, mouth_size, SHARK_LIGHTGREY)
+        mouth.setCurrentAngle(0, mouth.uAxis)
+        neck.addChild(mouth)
 
         if scale is not None:
             self.setDefaultScale(scale)
