@@ -10,14 +10,15 @@ import numpy as np
 class Shark(Component, EnvironmentObject):
     """
     Define how the shark model is written.
+    - [ ] TODO: Head
     - [ ] TODO: Mouth
     - [ ] TODO: Eye
     - [x] TODO: Body
     - [ ] TODO: First dorsal fin
-    - [ ] TODO: Pectoral fin
     - [x] TODO: Tail
-        - [ ] TODO: Caudal fin
-        - [ ] TODO: Other parts
+        - [x] TODO: Pectoral fin
+        - [x] TODO: Caudal fin
+        - [x] TODO: Other parts
     """
 
     def __init__(self,
@@ -54,6 +55,21 @@ class Shark(Component, EnvironmentObject):
         pectoral_fin_pos = cur_size * [0, 0, -(1 + 1.5) / 2]
         pectoral_fin = Cube(Point(pectoral_fin_pos), shaderProg, pectoral_fin_size, SHARK_GREY)
         cur_par.addChild(pectoral_fin)
+
+        # define The Caudal fin
+        caudal_fin1_size = pectoral_fin_size * [0.2, 0.6, 1.1]
+        caudal_fin1_pos = pectoral_fin_size * [0, 0, 0.7]
+        caudal_fin1 = Cone(Point(caudal_fin1_pos), shaderProg, caudal_fin1_size, SHARK_GREY)
+        caudal_fin1.setCurrentAngle(180, caudal_fin1.vAxis)
+        caudal_fin1.setCurrentAngle(30, caudal_fin1.uAxis)
+        pectoral_fin.addChild(caudal_fin1)
+
+        caudal_fin2_size = pectoral_fin_size * [0.2, 0.6, 0.8]
+        caudal_fin2_pos = pectoral_fin_size * [0, 0, 0.7]
+        caudal_fin2 = Cone(Point(caudal_fin2_pos), shaderProg, caudal_fin2_size, SHARK_GREY)
+        caudal_fin2.setCurrentAngle(180, caudal_fin2.vAxis)
+        caudal_fin2.setCurrentAngle(-50, caudal_fin2.uAxis)
+        pectoral_fin.addChild(caudal_fin2)
 
         if scale is not None:
             self.setDefaultScale(scale)
