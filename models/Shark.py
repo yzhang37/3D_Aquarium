@@ -1,18 +1,20 @@
 import typing
-from Component import Component
+from Component import Component, CS680
 from EnvironmentObject import EnvironmentObject
 from Point import Point
 from Shapes import *
 import ColorType as Ct
 import numpy as np
 
+from models.Eye import Eye
 
-class Shark(Component, EnvironmentObject):
+
+class Shark(Component, EnvironmentObject, CS680):
     """
     Define how the shark model is written.
     - [x] Head
     - [x] Mouth
-    - [ ] TODO: Eye
+    - [x] Eye
     - [x] Body
     - [x] First dorsal fin
     - [x] Pectoral fin
@@ -113,6 +115,16 @@ class Shark(Component, EnvironmentObject):
         )
         pectoral_2.setDefaultAngle(-140, pectoral_2.wAxis)
         body.addChild(pectoral_2)
+
+        # add the eye
+        eye1 = Eye(self, Point((head_size[0] / 2, 0, 0)), shaderProg, [0.15, 0.15, 0.15])
+        eye1.setDefaultAngle(90, eye1.vAxis)
+        head.addChild(eye1)
+        eye2 = Eye(self, Point((-head_size[0] / 2, 0, 0)), shaderProg, [0.15, 0.15, 0.15])
+        eye2.setDefaultAngle(-90, eye2.vAxis)
+        head.addChild(eye2)
+
+        # TODO: make all the components in componentList and componentDict
 
         if scale is not None:
             self.setDefaultScale(scale)
