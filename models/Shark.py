@@ -45,21 +45,24 @@ class Shark(Component, EnvironmentObject, CS680):
         connect_part_size = [0.01, 0.01, 0.01]
 
         # body lower part
-        tails_part = []
+        # tails_part = []
         cur_size = body_size
         cur_par = body
         for i in range(3):
             new_size = cur_size * [0.8, 0.7, 0.6]
             new_pos = cur_size * [0, 0.1 / 2, -(1 + 0.6 - 0.1) / 2]
 
-            new_tail = Cube(Point(new_pos), shaderProg, new_size, SHARK_GREY)
-            new_tail.setRotateExtent(new_tail.uAxis, 0, 0)
-            new_tail.setRotateExtent(new_tail.vAxis, -30, 30)
-            new_tail.setRotateExtent(new_tail.wAxis, 0, 0)
+            conn_part = Cube(Point(new_pos), shaderProg, connect_part_size, SHARK_GREY)
+            conn_part.setRotateExtent(conn_part.uAxis, 0, 0)
+            conn_part.setRotateExtent(conn_part.vAxis, -20, 20)
+            conn_part.setRotateExtent(conn_part.wAxis, 0, 0)
 
-            self.rotationRegistry.append(CS680.RotWrap(new_tail, [0, 1, 0]))
-            cur_par.addChild(new_tail)
-            tails_part.append(new_tail)
+            new_tail = Cube(Point((0, 0, 0)), shaderProg, new_size, SHARK_GREY)
+
+            self.rotationRegistry.append(CS680.RotWrap(conn_part, [0, 0.5, 0]))
+            cur_par.addChild(conn_part)
+            conn_part.addChild(new_tail)
+            # tails_part.append(new_tail)
 
             cur_par = new_tail
             cur_size = new_size
@@ -116,7 +119,10 @@ class Shark(Component, EnvironmentObject, CS680):
             0))
         )
         pectoral_1.setDefaultAngle(140, pectoral_1.wAxis)
+        pectoral_1.setRotateExtent(pectoral_1.wAxis, 120, 160)
+        self.rotationRegistry.append(CS680.RotWrap(pectoral_1, [0, 0, 0.2]))
         body.addChild(pectoral_1)
+
         pectoral_2 = Shark.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
         pectoral_2.setDefaultPosition(Point((
             +(body_size[0] - 0.1) / 2,
@@ -124,6 +130,8 @@ class Shark(Component, EnvironmentObject, CS680):
             0))
         )
         pectoral_2.setDefaultAngle(-140, pectoral_2.wAxis)
+        pectoral_2.setRotateExtent(pectoral_2.wAxis, -160, -120)
+        self.rotationRegistry.append(CS680.RotWrap(pectoral_2, [0, 0, -0.2]))
         body.addChild(pectoral_2)
 
         # add the eye
@@ -133,8 +141,6 @@ class Shark(Component, EnvironmentObject, CS680):
         eye2 = Eye(self, Point((-head_size[0] / 2, 0, 0)), shaderProg, [0.15, 0.15, 0.15])
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
-
-        # TODO: make all the components in componentList and componentDict
 
         if scale is not None:
             self.setDefaultScale(scale)
@@ -181,7 +187,7 @@ class Shark(Component, EnvironmentObject, CS680):
                 speed[2] *= -1
 
         # rotate animation
-        self.vAngle = (self.vAngle + 1) % 360
+        # self.vAngle = (self.vAngle + 1) % 360
 
     def stepForward(self, components, tank_dimensions, vivarium):
         pass
