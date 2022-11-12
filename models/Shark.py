@@ -1,8 +1,6 @@
 import typing
-from typing import List, Tuple, Union, Optional
 from Component import Component, CS680
 from EnvironmentObject import EnvironmentObject
-from Point import Point
 from Shapes import *
 import ColorType as Ct
 import numpy as np
@@ -27,7 +25,7 @@ class Shark(Component, EnvironmentObject, CS680):
     def __init__(self,
                  parent: Component,
                  position: Point,
-                 shaderProg,
+                 shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None):
         Component.__init__(self, position)
         CS680.__init__(self)
@@ -149,7 +147,7 @@ class Shark(Component, EnvironmentObject, CS680):
             self.setDefaultScale(scale)
 
     @staticmethod
-    def createFin(nums: int, shaderProg,
+    def createFin(nums: int, shaderProg: GLProgram,
                   scale: Union[List[float], Tuple[float, float, float], np.ndarray, None] = None,
                   color: Ct.ColorType = Ct.RED) -> Component:
         """

@@ -1,4 +1,5 @@
 from Component import Component, CS680
+from GLProgram import GLProgram
 from Point import Point
 import typing
 import ColorType as Ct
@@ -9,7 +10,7 @@ class Eye(Component, CS680):
     def __init__(self,
                  parent: Component,
                  position: Point,
-                 shaderProg,
+                 shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None,
                  eyeColor: Ct.ColorType = Ct.WHITE,
                  pupilColor: Ct.ColorType = Ct.BLACK):
