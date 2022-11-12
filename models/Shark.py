@@ -1,4 +1,5 @@
 import typing
+from typing import List, Tuple, Union, Optional
 from Component import Component, CS680
 from EnvironmentObject import EnvironmentObject
 from Point import Point
@@ -104,10 +105,12 @@ class Shark(Component, EnvironmentObject, CS680):
         mouth_pos = neck_size * [0, -0.25, (1 + 0.7 - 0.1) / 2]
         mouth = Cube(Point(mouth_pos), shaderProg, mouth_size, SHARK_LIGHTGREY)
         mouth.setCurrentAngle(0, mouth.uAxis)
+        mouth.setRotateExtent(mouth.uAxis, 0, 20)
+        self.rotationRegistry.append(CS680.RotWrap(mouth, [0.1, 0, 0]))
         neck.addChild(mouth)
 
         # define the first dorsal
-        first_dorsal = Shark.createFin(12, shaderProg, [1, 0.9, 1.2], SHARK_LIGHTGREY)
+        first_dorsal = Shark.createFin(12, shaderProg, [1, 1.2, 1.2], SHARK_LIGHTGREY)
         first_dorsal.setDefaultPosition(Point((0, 0.5 - 0.1, 0)))
         body.addChild(first_dorsal)
 
@@ -147,7 +150,7 @@ class Shark(Component, EnvironmentObject, CS680):
 
     @staticmethod
     def createFin(nums: int, shaderProg,
-                  scale: typing.Union[typing.List[float], typing.Tuple[float, float, float], None] = None,
+                  scale: Union[List[float], Tuple[float, float, float], np.ndarray, None] = None,
                   color: Ct.ColorType = Ct.RED) -> Component:
         """
         Create a fin with the given number of segments.
@@ -187,7 +190,8 @@ class Shark(Component, EnvironmentObject, CS680):
                 speed[2] *= -1
 
         # rotate animation
-        # self.vAngle = (self.vAngle + 1) % 360
+        # self.vAngle = (self.vAngle + 5) % 360
+        # self.setCurrentPosition(self.defaultPos + Point((0, 0.5 * np.sin(self.vAngle / 180 * np.pi), 0)))
 
     def stepForward(self, components, tank_dimensions, vivarium):
         pass
