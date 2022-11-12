@@ -14,8 +14,8 @@ class Shark(Component, EnvironmentObject):
     - [x] Mouth
     - [ ] TODO: Eye
     - [x] Body
-    - [ ] TODO: First dorsal fin
-    - [ ] TODO: Pectoral fin
+    - [x] First dorsal fin
+    - [x] Pectoral fin
     - [x] Lower Part
         - [x] Tail
         - [x] Caudal fin
@@ -91,8 +91,57 @@ class Shark(Component, EnvironmentObject):
         mouth.setCurrentAngle(0, mouth.uAxis)
         neck.addChild(mouth)
 
+        # define the first dorsal
+        first_dorsal = Shark.createFin(12, shaderProg, [1, 0.9, 1.2], SHARK_LIGHTGREY)
+        first_dorsal.setDefaultPosition(Point((0, 0.5 - 0.1, 0)))
+        body.addChild(first_dorsal)
+
+        # define two Pectoral fin
+        pectoral_1 = Shark.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_1.setDefaultPosition(Point((
+            -(body_size[0] - 0.1) / 2,
+            -(body_size[1] - 0.1) / 2,
+            0))
+        )
+        pectoral_1.setDefaultAngle(140, pectoral_1.wAxis)
+        body.addChild(pectoral_1)
+        pectoral_2 = Shark.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_2.setDefaultPosition(Point((
+            +(body_size[0] - 0.1) / 2,
+            -(body_size[1] - 0.1) / 2,
+            0))
+        )
+        pectoral_2.setDefaultAngle(-140, pectoral_2.wAxis)
+        body.addChild(pectoral_2)
+
         if scale is not None:
             self.setDefaultScale(scale)
+
+    @staticmethod
+    def createFin(nums: int, shaderProg,
+                  scale: typing.Optional[typing.Tuple[float, float, float]] = None,
+                  color: Ct.ColorType = Ct.RED) -> Component:
+        """
+        Create a fin with the given number of segments.
+        :param color: the color
+        :param nums: Number of segments.
+        :param shaderProg: Shader program to use.
+        :param scale: Scale of the fin.
+        :return: The fin.
+        """
+        fin_size = np.array([0.08, 0.12, 0.6])
+        base_fin = Cube(Point((0, 0, 0)), shaderProg, fin_size, color)
+
+        parent = base_fin
+        for _ in range(nums - 1):
+            new_fin = Cube(Point((0, 0, 0)), shaderProg, fin_size, color)
+            new_fin.setCurrentAngle(-10, new_fin.uAxis)
+            parent.addChild(new_fin)
+            parent = new_fin
+
+        if scale is not None:
+            base_fin.setDefaultScale(scale)
+        return base_fin
 
     def animationUpdate(self):
         # TODO: Animation
