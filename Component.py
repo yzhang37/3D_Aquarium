@@ -16,6 +16,7 @@ import numpy as np
 from PIL import Image
 
 import GLBuffer
+from GLProgram import GLProgram
 from Point import Point
 from ColorType import ColorType
 from Displayable import Displayable
@@ -177,7 +178,7 @@ class Component:
         # use init value to generate transformation matrix for all children
         self.update()
 
-    def draw(self, shaderProg):
+    def draw(self, shaderProg: GLProgram):
         shaderProg.setMat4("modelMat", self.transformationMat.transpose())
         shaderProg.setVec3("currentColor", self.current_color)
         if isinstance(self.displayObj, Displayable):
@@ -318,7 +319,7 @@ class Component:
             result = max(result, low_bound)
         return result
 
-    def setTexture(self, shaderProg, imgFilePath, textureOn=True):
+    def setTexture(self, shaderProg: GLProgram, imgFilePath, textureOn=True):
         # apply texturek
         if not os.path.isfile(imgFilePath):
             raise TypeError("Image File doesn't exist")

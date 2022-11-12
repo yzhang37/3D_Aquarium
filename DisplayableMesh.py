@@ -8,6 +8,9 @@ Modified by Daniel Scrivener 07/22
 """
 
 from random import random
+from typing import Union, List, Tuple
+
+from GLProgram import GLProgram
 from Point import Point
 from Displayable import Displayable
 from GLBuffer import VAO, VBO, EBO
@@ -52,7 +55,12 @@ class DisplayableMesh(Displayable):
 
     defaultColor = None
 
-    def __init__(self, shaderProg, scale, vertexData, indexData, color=ColorType.BLUE):
+    def __init__(self,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 vertexData,
+                 indexData,
+                 color: ColorType.ColorType = ColorType.BLUE):
         """
         :param shaderProg: compiled shader program
         :type shaderProg: GLProgram
