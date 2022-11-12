@@ -10,7 +10,8 @@ Modified by Daniel Scrivener 07/2022
 import copy
 import math
 import os
-from typing import Tuple, Type
+from typing import *
+from typing import Union
 
 import numpy as np
 from PIL import Image
@@ -125,8 +126,8 @@ class Component:
             self.default_color = display_obj.defaultColor
             self.current_color = display_obj.defaultColor
         else:
-            self.default_color = np.array([1.,1.,1.])
-            self.current_color = np.array([1.,1.,1.])
+            self.default_color = np.array([1., 1., 1.])
+            self.current_color = np.array([1., 1., 1.])
         self.defaultPos = position.copy()
         self.currentPos = position.copy()
         self.displayObj = display_obj
@@ -493,7 +494,7 @@ class Component:
             raise TypeError("axis should have the same size as the current one")
         for i in range(len(w)):
             self.wAxis[i] = w[i]
-    
+
     def setQuaternion(self, q):
         """ sets a quaternion for rotation """
         if not isinstance(q, Quaternion):
@@ -503,3 +504,22 @@ class Component:
     def clearQuaternion(self):
         """ clears the existing quaternion """
         self.quat = None
+
+
+class CS680:
+    class RotWrap:
+        comp: Component = None
+        rotation_speed: Union[List[float], Tuple[float, float, float]] = None
+
+        def __init__(self,
+                     comp: Component,
+                     rotation_speed: Union[List[float], Tuple[float, float, float]]):
+            self.comp = comp
+            self.rotation_speed = rotation_speed
+
+    componentDict: Dict[str, Component] = None
+    rotationRegistry: List[RotWrap] = None
+
+    def __init__(self):
+        self.componentDict = {}
+        self.rotationRegistry = []

@@ -28,7 +28,8 @@ class Shark(Component, EnvironmentObject, CS680):
                  position: Point,
                  shaderProg,
                  scale: typing.Optional[typing.Iterator] = None):
-        super().__init__(position)
+        Component.__init__(self, position)
+        CS680.__init__(self)
 
         # define the colors
         SHARK_GREY = Ct.ColorType(0.243, 0.275, 0.376)
@@ -41,6 +42,8 @@ class Shark(Component, EnvironmentObject, CS680):
         body = Cube(Point((0, 0, 0)), shaderProg, body_size, SHARK_GREY)
         self.addChild(body)
 
+        connect_part_size = [0.01, 0.01, 0.01]
+
         # body lower part
         tails_part = []
         cur_size = body_size
@@ -48,9 +51,16 @@ class Shark(Component, EnvironmentObject, CS680):
         for i in range(3):
             new_size = cur_size * [0.8, 0.7, 0.6]
             new_pos = cur_size * [0, 0.1 / 2, -(1 + 0.6 - 0.1) / 2]
+
             new_tail = Cube(Point(new_pos), shaderProg, new_size, SHARK_GREY)
+            new_tail.setRotateExtent(new_tail.uAxis, 0, 0)
+            new_tail.setRotateExtent(new_tail.vAxis, -30, 30)
+            new_tail.setRotateExtent(new_tail.wAxis, 0, 0)
+
+            self.rotationRegistry.append(CS680.RotWrap(new_tail, [0, 1, 0]))
             cur_par.addChild(new_tail)
             tails_part.append(new_tail)
+
             cur_par = new_tail
             cur_size = new_size
 
@@ -131,7 +141,7 @@ class Shark(Component, EnvironmentObject, CS680):
 
     @staticmethod
     def createFin(nums: int, shaderProg,
-                  scale: typing.Optional[typing.Tuple[float, float, float]] = None,
+                  scale: typing.Union[typing.List[float], typing.Tuple[float, float, float], None] = None,
                   color: Ct.ColorType = Ct.RED) -> Component:
         """
         Create a fin with the given number of segments.
@@ -156,8 +166,22 @@ class Shark(Component, EnvironmentObject, CS680):
         return base_fin
 
     def animationUpdate(self):
-        # TODO: Animation
-        pass
+        for i, wrap in enumerate(self.rotationRegistry):
+            comp = wrap.comp
+            speed = wrap.rotation_speed
+            comp.rotate(speed[0], comp.uAxis)
+            comp.rotate(speed[1], comp.vAxis)
+            comp.rotate(speed[2], comp.wAxis)
+            # rotation reached the limit
+            if comp.uAngle in comp.uRange:
+                speed[0] *= -1
+            if comp.vAngle in comp.vRange:
+                speed[1] *= -1
+            if comp.wAngle in comp.wRange:
+                speed[2] *= -1
+
+        # rotate animation
+        self.vAngle = (self.vAngle + 1) % 360
 
     def stepForward(self, components, tank_dimensions, vivarium):
         pass
