@@ -63,7 +63,10 @@ class Cod(Component, EnvironmentObject, CS680):
         fin2 = Cube(Point((0, body_size[1] / 2, (body_size[2] - fin2_size[2]) / 2)), shaderProg, fin2_size, finColor)
         body.addChild(fin2)
 
-        # TODO: Define the Anal Fins
+        # Define the Anal Fins
+        fin3_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.4]
+        fin3 = Cube(Point((0, -body_size[1] / 2, -0.1)), shaderProg, fin3_size, finColor)
+        body.addChild(fin3)
 
         # Define the Tails
         tail_conn = Cube(Point((0, 0, -body_size[2] / 2)), shaderProg, conn_size, bodyColor)
