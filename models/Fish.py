@@ -10,6 +10,8 @@ import models.Utility
 
 
 _headColor = Ct.PURPLE
+_eyeColor = Ct.WHITE
+_pupilColor = Ct.BLACK
 _bodyColor = Ct.RED
 _fin1Color = Ct.BLUE
 _fin2Color = Ct.GREEN
@@ -129,6 +131,8 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None,
                  headColor: Ct.ColorType = _headColor,
+                 eyeColor: Ct.ColorType = _eyeColor,
+                 pupilColor: Ct.ColorType = _pupilColor,
                  bodyColor: Ct.ColorType = _bodyColor,
                  fin1Color: Ct.ColorType = _fin1Color,
                  fin2Color: Ct.ColorType = _fin2Color,
@@ -166,10 +170,10 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
 
         # define the eye
         eye_size = np.array([0.22, 0.22, 0.22])
-        eye1 = Eye(self, Point(((head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size)
+        eye1 = Eye(self, Point(((head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size, eyeColor, pupilColor)
         eye1.setDefaultAngle(90, eye1.vAxis)
         head.addChild(eye1)
-        eye2 = Eye(self, Point((-(head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size)
+        eye2 = Eye(self, Point((-(head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size, eyeColor, pupilColor)
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
 

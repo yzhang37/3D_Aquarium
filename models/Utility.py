@@ -15,6 +15,14 @@ CodFin1Color = Ct.ColorType(84 / 255, 72 / 255, 53 / 255)
 CodFin2Color = Ct.ColorType(165 / 255, 147 / 255, 120 / 255)
 CodTail1Color = Ct.ColorType(142 / 255, 126 / 255, 106 / 255)
 CodTail2Color = Ct.ColorType(165 / 255, 147 / 255, 120 / 255)
+SalmonHeadColor = Ct.ColorType(85 / 255, 111 / 255, 81 / 255)
+SalmonEyeColor = Ct.ColorType(39 / 255, 66 / 255, 42 / 255)
+SalmonPupilColor = Ct.ColorType(27 / 255, 33 / 255, 28 / 255)
+SalmonBodyColor = Ct.ColorType(128 / 255, 51 / 255, 49 / 255)
+SalmonFin1Color = Ct.ColorType(69 / 255, 58 / 255, 29 / 255)
+SalmonFin2Color = Ct.ColorType(151 / 255, 159 / 255, 63 / 255)
+SalmonTail1Color = Ct.ColorType(147 / 255, 116 / 255, 78 / 255)
+SalmonTail2Color = Ct.ColorType(125 / 255, 90 / 255, 55 / 255)
 
 
 def createFin(nums: int, shaderProg: GLProgram,
