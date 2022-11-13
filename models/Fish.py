@@ -9,6 +9,7 @@ from GLProgram import GLProgram
 from Point import Point
 from Shapes import *
 from models.Eye import Eye
+from models.Utility import Utility
 
 
 class Cod(Component, EnvironmentObject, CS680):
@@ -52,7 +53,19 @@ class Cod(Component, EnvironmentObject, CS680):
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
 
-        # TODO: Define the Pectoral Fin
+        # Define the Pectoral Fin
+        pec_fin1 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin1.setDefaultPosition(Point((
+            body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
+        )))
+        pec_fin1.setDefaultAngle(-135, pec_fin1.wAxis)
+        body.addChild(pec_fin1)
+        pec_fin2 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin2.setDefaultPosition(Point((
+            -body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
+        )))
+        pec_fin2.setDefaultAngle(135, pec_fin2.wAxis)
+        body.addChild(pec_fin2)
 
         # Define the Dorsal Fins
         fin1_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.7]
