@@ -190,6 +190,10 @@ class Shark(Component, EnvironmentObject, CS680):
         # rotate animation
         # self.vAngle = (self.vAngle + 5) % 360
         # self.setCurrentPosition(self.defaultPos + Point((0, 0.5 * np.sin(self.vAngle / 180 * np.pi), 0)))
+        self.update()
 
-    def stepForward(self, components, tank_dimensions, vivarium):
+    def stepForward(self,
+                    components,
+                    tank_dimensions,
+                    vivarium):
         pass

@@ -43,9 +43,12 @@ class EnvironmentObject:
         """
         Perform the next frame of this environment object's animation.
         """
-        self.update()
+        pass
 
-    def stepForward(self):
+    def stepForward(self,
+                    components,
+                    tank_dimensions,
+                    vivarium):
         """
         Have this environment object take a step forward in the simulation.
         """

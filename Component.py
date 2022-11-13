@@ -273,6 +273,14 @@ class Component:
             self.setV([0, 1, 0])
             self.setW([0, 0, 1])
 
+    def setRotateExtents(self, uMin, uMax, vMin, vMax, wMin, wMax):
+        """
+        Factory function to set all the rotation extents
+        """
+        self.setRotateExtent(self.uAxis, uMin, uMax)
+        self.setRotateExtent(self.vAxis, vMin, vMax)
+        self.setRotateExtent(self.wAxis, wMin, wMax)
+
     def setRotateExtent(self, axis, minDeg=None, maxDeg=None):
         """
         set rotate extent range for axis rotation
