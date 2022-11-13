@@ -40,7 +40,7 @@ try:
 except ImportError:
     raise ImportError("Required dependency PyOpenGL not present")
 
-##### TODO 1: Construct your two different creatures
+##### Construct your two different creatures
 # Requirements:
 #   1. For the basic parts of your creatures, feel free to use routines provided with the previous assignment.
 #   You are also free to create your own basic parts, but they must be polyhedral (solid).
@@ -89,7 +89,7 @@ class Linkage(Component, EnvironmentObject):
         self.species_id = 1
 
     def animationUpdate(self):
-        ##### TODO 2: Animate your creature!
+        ## Animate your creature!
         # Requirements:
         #   1. Set reasonable joints limit for your creature
         #   2. The linkages should move back and forth in a periodic motion, as the creatures move about the vivarium.
@@ -132,7 +132,6 @@ class Linkage(Component, EnvironmentObject):
         #           2. Collision between the same species: They should bounce apart from each other. You can use a
         #           reflection vector about a plane to decide the after-collision direction.
         #       3. You are welcome to use bounding spheres for collision detection.
-
         pass
 
 class ModelArm(Component):
