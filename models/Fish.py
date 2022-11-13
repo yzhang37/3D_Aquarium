@@ -1,15 +1,20 @@
 import typing
 
-import numpy as np
 
 import ColorType as Ct
-from Component import Component, CS680
+from Component import CS680
 from EnvironmentObject import EnvironmentObject
-from GLProgram import GLProgram
-from Point import Point
 from Shapes import *
 from models.Eye import Eye
-from models.Utility import Utility
+import models.Utility
+
+
+_headColor = Ct.PURPLE
+_bodyColor = Ct.RED
+_fin1Color = Ct.BLUE
+_fin2Color = Ct.GREEN
+_tail1Color = Ct.CYAN
+_tail2Color = Ct.YELLOW
 
 
 class Cod(Component, EnvironmentObject, CS680):
@@ -18,10 +23,12 @@ class Cod(Component, EnvironmentObject, CS680):
                  position: Point,
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None,
-                 headColor: Ct.ColorType = Ct.PURPLE,
-                 bodyColor: Ct.ColorType = Ct.RED,
-                 finColor: Ct.ColorType = Ct.BLUE,
-                 tailColor: Ct.ColorType = Ct.CYAN):
+                 headColor: Ct.ColorType = _headColor,
+                 bodyColor: Ct.ColorType = _bodyColor,
+                 fin1Color: Ct.ColorType = _fin1Color,
+                 fin2Color: Ct.ColorType = _fin2Color,
+                 tail1Color: Ct.ColorType = _tail1Color,
+                 tail2Color: Ct.ColorType = _tail2Color):
         Component.__init__(self, position)
         CS680.__init__(self)
 
@@ -54,31 +61,35 @@ class Cod(Component, EnvironmentObject, CS680):
         head.addChild(eye2)
 
         # Define the Pectoral Fin
-        pec_fin1 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin1 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin1.setDefaultPosition(Point((
             body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
         pec_fin1.setDefaultAngle(-135, pec_fin1.wAxis)
+        pec_fin1.setRotateExtent(pec_fin1.wAxis, -150, -120)
+        self.rotationRegistry.append(CS680.RotWrap(pec_fin1, [0, 0, -1]))
         body.addChild(pec_fin1)
-        pec_fin2 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin2 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin2.setDefaultPosition(Point((
             -body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
         pec_fin2.setDefaultAngle(135, pec_fin2.wAxis)
+        pec_fin2.setRotateExtent(pec_fin1.wAxis, 120, 150)
+        self.rotationRegistry.append(CS680.RotWrap(pec_fin2, [0, 0, 1]))
         body.addChild(pec_fin2)
 
         # Define the Dorsal Fins
         fin1_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.7]
-        fin1 = Cube(Point((0, body_size[1] / 2, -0.1)), shaderProg, fin1_size, finColor)
+        fin1 = Cube(Point((0, body_size[1] / 2, -0.1)), shaderProg, fin1_size, fin1Color)
         body.addChild(fin1)
 
         fin2_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.4]
-        fin2 = Cube(Point((0, body_size[1] / 2, (body_size[2] - fin2_size[2]) / 2)), shaderProg, fin2_size, finColor)
+        fin2 = Cube(Point((0, body_size[1] / 2, (body_size[2] - fin2_size[2]) / 2)), shaderProg, fin2_size, fin1Color)
         body.addChild(fin2)
 
         # Define the Anal Fins
         fin3_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.4]
-        fin3 = Cube(Point((0, -body_size[1] / 2, -0.1)), shaderProg, fin3_size, finColor)
+        fin3 = Cube(Point((0, -body_size[1] / 2, -0.1)), shaderProg, fin3_size, fin1Color)
         body.addChild(fin3)
 
         # Define the Tails
@@ -86,17 +97,18 @@ class Cod(Component, EnvironmentObject, CS680):
         body.addChild(tail_conn)
         tail_conn.setRotateExtents(0, 0, -36, 36, 0, 0)
         self.rotationRegistry.append(CS680.RotWrap(tail_conn, [0, -2.7, 0]))
-        tail_upper_conn = Sphere(Point((0, 0, 0)), shaderProg, conn_size, tailColor, limb=True)
-        tail_lower_conn = Sphere(Point((0, 0, 0)), shaderProg, conn_size, tailColor, limb=True)
+        tail_upper_conn = Sphere(Point((0, 0, 0)), shaderProg, conn_size, tail1Color, limb=True)
+        tail_lower_conn = Sphere(Point((0, 0, 0)), shaderProg, conn_size, tail1Color, limb=True)
         tail_conn.addChild(tail_upper_conn)
         tail_conn.addChild(tail_lower_conn)
         tail_upper_conn.setDefaultAngle(24, tail_upper_conn.uAxis)
         tail_lower_conn.setDefaultAngle(-24, tail_lower_conn.uAxis)
 
-        tail_size = body_size * [0.1, 0.25, 0.45]
-        tail_upper = Cube(Point((0, 0, -tail_size[2] / 2)), shaderProg, tail_size, tailColor)
+        tail_size1 = body_size * [0.12, 0.25, 0.45]
+        tail_size2 = body_size * [0.1, 0.25, 0.45]
+        tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size1, tail1Color)
         tail_upper_conn.addChild(tail_upper)
-        tail_upper = Cube(Point((0, 0, -tail_size[2] / 2)), shaderProg, tail_size, tailColor)
+        tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size2, tail2Color)
         tail_lower_conn.addChild(tail_upper)
 
     def animationUpdate(self):
