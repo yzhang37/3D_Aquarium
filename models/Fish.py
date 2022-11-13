@@ -1,15 +1,12 @@
 import typing
 
-import numpy as np
 
 import ColorType as Ct
-from Component import Component, CS680
+from Component import CS680
 from EnvironmentObject import EnvironmentObject
-from GLProgram import GLProgram
-from Point import Point
 from Shapes import *
 from models.Eye import Eye
-from models.Utility import Utility
+import models.Utility
 
 
 class Cod(Component, EnvironmentObject, CS680):
@@ -54,17 +51,21 @@ class Cod(Component, EnvironmentObject, CS680):
         head.addChild(eye2)
 
         # Define the Pectoral Fin
-        pec_fin1 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin1 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
         pec_fin1.setDefaultPosition(Point((
             body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
         pec_fin1.setDefaultAngle(-135, pec_fin1.wAxis)
+        pec_fin1.setRotateExtent(pec_fin1.wAxis, -150, -120)
+        self.rotationRegistry.append(CS680.RotWrap(pec_fin1, [0, 0, -1]))
         body.addChild(pec_fin1)
-        pec_fin2 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
+        pec_fin2 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], finColor)
         pec_fin2.setDefaultPosition(Point((
             -body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
         pec_fin2.setDefaultAngle(135, pec_fin2.wAxis)
+        pec_fin2.setRotateExtent(pec_fin1.wAxis, 120, 150)
+        self.rotationRegistry.append(CS680.RotWrap(pec_fin2, [0, 0, 1]))
         body.addChild(pec_fin2)
 
         # Define the Dorsal Fins

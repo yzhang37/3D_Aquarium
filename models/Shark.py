@@ -5,8 +5,8 @@ from Shapes import *
 import ColorType as Ct
 import numpy as np
 
+import models.Utility
 from models.Eye import Eye
-from models.Utility import Utility
 
 
 class Shark(Component, EnvironmentObject, CS680):
@@ -40,6 +40,8 @@ class Shark(Component, EnvironmentObject, CS680):
         # width, height, length
         body_size = np.array([0.9, 1.1, 1.4])
         body = Cube(Point((0, 0, 0)), shaderProg, body_size, SHARK_GREY)
+        body.setRotateExtents(0, 0, -8, 8, 0, 0)
+        self.rotationRegistry.append(CS680.RotWrap(body, [0, 0.2, 0]))
         self.addChild(body)
 
         connect_part_size = [0.01, 0.01, 0.01]
@@ -53,13 +55,11 @@ class Shark(Component, EnvironmentObject, CS680):
             new_pos = cur_size * [0, 0.1 / 2, -(1 + 0.6 - 0.1) / 2]
 
             conn_part = Cube(Point(new_pos), shaderProg, connect_part_size, SHARK_GREY)
-            conn_part.setRotateExtent(conn_part.uAxis, 0, 0)
-            conn_part.setRotateExtent(conn_part.vAxis, -20, 20)
-            conn_part.setRotateExtent(conn_part.wAxis, 0, 0)
+            conn_part.setRotateExtents(0, 0, -20, 20, 0, 0)
 
             new_tail = Cube(Point((0, 0, 0)), shaderProg, new_size, SHARK_GREY)
 
-            self.rotationRegistry.append(CS680.RotWrap(conn_part, [0, 0.5, 0]))
+            self.rotationRegistry.append(CS680.RotWrap(conn_part, [0, -0.5, 0]))
             cur_par.addChild(conn_part)
             conn_part.addChild(new_tail)
             # tails_part.append(new_tail)
@@ -104,17 +104,17 @@ class Shark(Component, EnvironmentObject, CS680):
         mouth_pos = neck_size * [0, -0.25, (1 + 0.7 - 0.1) / 2]
         mouth = Cube(Point(mouth_pos), shaderProg, mouth_size, SHARK_LIGHTGREY)
         mouth.setCurrentAngle(0, mouth.uAxis)
-        mouth.setRotateExtent(mouth.uAxis, 0, 20)
-        self.rotationRegistry.append(CS680.RotWrap(mouth, [0.1, 0, 0]))
+        mouth.setRotateExtents(0, 30, 0, 0, 0, 0)
+        self.rotationRegistry.append(CS680.RotWrap(mouth, [0.4, 0, 0]))
         neck.addChild(mouth)
 
         # define the first dorsal
-        first_dorsal = Utility.createFin(12, shaderProg, [1, 1.2, 1.2], SHARK_LIGHTGREY)
+        first_dorsal = models.Utility.createFin(12, shaderProg, [1, 1.2, 1.2], SHARK_LIGHTGREY)
         first_dorsal.setDefaultPosition(Point((0, 0.5 - 0.1, 0)))
         body.addChild(first_dorsal)
 
         # define two Pectoral fin
-        pectoral_1 = Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_1 = models.Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
         pectoral_1.setDefaultPosition(Point((
             -(body_size[0] - 0.1) / 2,
             -(body_size[1] - 0.1) / 2,
@@ -122,10 +122,10 @@ class Shark(Component, EnvironmentObject, CS680):
         )
         pectoral_1.setDefaultAngle(140, pectoral_1.wAxis)
         pectoral_1.setRotateExtent(pectoral_1.wAxis, 120, 160)
-        self.rotationRegistry.append(CS680.RotWrap(pectoral_1, [0, 0, 0.2]))
+        self.rotationRegistry.append(CS680.RotWrap(pectoral_1, [0, 0, 0.4]))
         body.addChild(pectoral_1)
 
-        pectoral_2 = Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_2 = models.Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
         pectoral_2.setDefaultPosition(Point((
             +(body_size[0] - 0.1) / 2,
             -(body_size[1] - 0.1) / 2,
@@ -133,7 +133,7 @@ class Shark(Component, EnvironmentObject, CS680):
         )
         pectoral_2.setDefaultAngle(-140, pectoral_2.wAxis)
         pectoral_2.setRotateExtent(pectoral_2.wAxis, -160, -120)
-        self.rotationRegistry.append(CS680.RotWrap(pectoral_2, [0, 0, -0.2]))
+        self.rotationRegistry.append(CS680.RotWrap(pectoral_2, [0, 0, -0.4]))
         body.addChild(pectoral_2)
 
         # add the eye
