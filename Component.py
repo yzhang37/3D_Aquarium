@@ -516,7 +516,7 @@ class Component:
         self.quat = None
 
 
-class CS680:
+class CS680PA3:
     class RotWrap:
         comp: Component = None
         rotation_speed: Union[List[float], Tuple[float, float, float]] = None
@@ -533,3 +533,18 @@ class CS680:
     def __init__(self):
         self.componentDict = {}
         self.rotationRegistry = []
+
+    def animationUpdate(self):
+        for i, wrap in enumerate(self.rotationRegistry):
+            comp = wrap.comp
+            speed = wrap.rotation_speed
+            comp.rotate(speed[0], comp.uAxis)
+            comp.rotate(speed[1], comp.vAxis)
+            comp.rotate(speed[2], comp.wAxis)
+            # rotation reached the limit
+            if comp.uAngle in comp.uRange:
+                speed[0] *= -1
+            if comp.vAngle in comp.vRange:
+                speed[1] *= -1
+            if comp.wAngle in comp.wRange:
+                speed[2] *= -1

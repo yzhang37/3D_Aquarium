@@ -1,5 +1,5 @@
 import typing
-from Component import CS680
+from Component import CS680PA3
 from EnvironmentObject import EnvironmentObject
 from Shapes import *
 import ColorType as Ct
@@ -9,7 +9,7 @@ import models.Utility
 from models.Eye import Eye
 
 
-class Shark(Component, EnvironmentObject, CS680):
+class Shark(Component, EnvironmentObject, CS680PA3):
     """
     Define how the shark model is written.
     - [x] Head
@@ -29,7 +29,7 @@ class Shark(Component, EnvironmentObject, CS680):
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None):
         Component.__init__(self, position)
-        CS680.__init__(self)
+        CS680PA3.__init__(self)
 
         # define the colors
         SHARK_GREY = Ct.ColorType(0.243, 0.275, 0.376)
@@ -41,7 +41,7 @@ class Shark(Component, EnvironmentObject, CS680):
         body_size = np.array([0.9, 1.1, 1.4])
         body = Cube(Point((0, 0, 0)), shaderProg, body_size, SHARK_GREY)
         body.setRotateExtents(0, 0, -8, 8, 0, 0)
-        self.rotationRegistry.append(CS680.RotWrap(body, [0, 0.2, 0]))
+        self.rotationRegistry.append(CS680PA3.RotWrap(body, [0, 0.2, 0]))
         self.addChild(body)
 
         connect_part_size = [0.01, 0.01, 0.01]
@@ -59,7 +59,7 @@ class Shark(Component, EnvironmentObject, CS680):
 
             new_tail = Cube(Point((0, 0, 0)), shaderProg, new_size, SHARK_GREY)
 
-            self.rotationRegistry.append(CS680.RotWrap(conn_part, [0, -0.5, 0]))
+            self.rotationRegistry.append(CS680PA3.RotWrap(conn_part, [0, -0.5, 0]))
             cur_par.addChild(conn_part)
             conn_part.addChild(new_tail)
             # tails_part.append(new_tail)
@@ -105,7 +105,7 @@ class Shark(Component, EnvironmentObject, CS680):
         mouth = Cube(Point(mouth_pos), shaderProg, mouth_size, SHARK_LIGHTGREY)
         mouth.setCurrentAngle(0, mouth.uAxis)
         mouth.setRotateExtents(0, 30, 0, 0, 0, 0)
-        self.rotationRegistry.append(CS680.RotWrap(mouth, [0.4, 0, 0]))
+        self.rotationRegistry.append(CS680PA3.RotWrap(mouth, [0.4, 0, 0]))
         neck.addChild(mouth)
 
         # define the first dorsal
@@ -122,7 +122,7 @@ class Shark(Component, EnvironmentObject, CS680):
         )
         pectoral_1.setDefaultAngle(140, pectoral_1.wAxis)
         pectoral_1.setRotateExtent(pectoral_1.wAxis, 120, 160)
-        self.rotationRegistry.append(CS680.RotWrap(pectoral_1, [0, 0, 0.4]))
+        self.rotationRegistry.append(CS680PA3.RotWrap(pectoral_1, [0, 0, 0.4]))
         body.addChild(pectoral_1)
 
         pectoral_2 = models.Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
@@ -133,7 +133,7 @@ class Shark(Component, EnvironmentObject, CS680):
         )
         pectoral_2.setDefaultAngle(-140, pectoral_2.wAxis)
         pectoral_2.setRotateExtent(pectoral_2.wAxis, -160, -120)
-        self.rotationRegistry.append(CS680.RotWrap(pectoral_2, [0, 0, -0.4]))
+        self.rotationRegistry.append(CS680PA3.RotWrap(pectoral_2, [0, 0, -0.4]))
         body.addChild(pectoral_2)
 
         # add the eye
@@ -148,20 +148,7 @@ class Shark(Component, EnvironmentObject, CS680):
             self.setDefaultScale(scale)
 
     def animationUpdate(self):
-        for i, wrap in enumerate(self.rotationRegistry):
-            comp = wrap.comp
-            speed = wrap.rotation_speed
-            comp.rotate(speed[0], comp.uAxis)
-            comp.rotate(speed[1], comp.vAxis)
-            comp.rotate(speed[2], comp.wAxis)
-            # rotation reached the limit
-            if comp.uAngle in comp.uRange:
-                speed[0] *= -1
-            if comp.vAngle in comp.vRange:
-                speed[1] *= -1
-            if comp.wAngle in comp.wRange:
-                speed[2] *= -1
-
+        CS680PA3.animationUpdate(self)
         # rotate animation
         # self.vAngle = (self.vAngle + 5) % 360
         # self.setCurrentPosition(self.defaultPos + Point((0, 0.5 * np.sin(self.vAngle / 180 * np.pi), 0)))

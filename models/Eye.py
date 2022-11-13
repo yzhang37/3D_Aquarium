@@ -1,4 +1,4 @@
-from Component import Component, CS680
+from Component import Component, CS680PA3
 from GLProgram import GLProgram
 from Point import Point
 import typing
@@ -6,7 +6,7 @@ import ColorType as Ct
 from Shapes import Sphere
 
 
-class Eye(Component, CS680):
+class Eye(Component, CS680PA3):
     def __init__(self,
                  parent: Component,
                  position: Point,
