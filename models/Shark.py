@@ -1,11 +1,12 @@
 import typing
-from Component import Component, CS680
+from Component import CS680
 from EnvironmentObject import EnvironmentObject
 from Shapes import *
 import ColorType as Ct
 import numpy as np
 
 from models.Eye import Eye
+from models.Utility import Utility
 
 
 class Shark(Component, EnvironmentObject, CS680):
@@ -108,12 +109,12 @@ class Shark(Component, EnvironmentObject, CS680):
         neck.addChild(mouth)
 
         # define the first dorsal
-        first_dorsal = Shark.createFin(12, shaderProg, [1, 1.2, 1.2], SHARK_LIGHTGREY)
+        first_dorsal = Utility.createFin(12, shaderProg, [1, 1.2, 1.2], SHARK_LIGHTGREY)
         first_dorsal.setDefaultPosition(Point((0, 0.5 - 0.1, 0)))
         body.addChild(first_dorsal)
 
         # define two Pectoral fin
-        pectoral_1 = Shark.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_1 = Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
         pectoral_1.setDefaultPosition(Point((
             -(body_size[0] - 0.1) / 2,
             -(body_size[1] - 0.1) / 2,
@@ -124,7 +125,7 @@ class Shark(Component, EnvironmentObject, CS680):
         self.rotationRegistry.append(CS680.RotWrap(pectoral_1, [0, 0, 0.2]))
         body.addChild(pectoral_1)
 
-        pectoral_2 = Shark.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
+        pectoral_2 = Utility.createFin(12, shaderProg, [1, 1, 0.6], SHARK_LIGHTGREY)
         pectoral_2.setDefaultPosition(Point((
             +(body_size[0] - 0.1) / 2,
             -(body_size[1] - 0.1) / 2,
@@ -146,32 +147,6 @@ class Shark(Component, EnvironmentObject, CS680):
         if scale is not None:
             self.setDefaultScale(scale)
 
-    @staticmethod
-    def createFin(nums: int, shaderProg: GLProgram,
-                  scale: Union[List[float], Tuple[float, float, float], np.ndarray, None] = None,
-                  color: Ct.ColorType = Ct.RED) -> Component:
-        """
-        Create a fin with the given number of segments.
-        :param color: the color
-        :param nums: Number of segments.
-        :param shaderProg: Shader program to use.
-        :param scale: Scale of the fin.
-        :return: The fin.
-        """
-        fin_size = np.array([0.08, 0.12, 0.6])
-        base_fin = Cube(Point((0, 0, 0)), shaderProg, fin_size, color)
-
-        parent = base_fin
-        for _ in range(nums - 1):
-            new_fin = Cube(Point((0, 0, 0)), shaderProg, fin_size, color)
-            new_fin.setCurrentAngle(-10, new_fin.uAxis)
-            parent.addChild(new_fin)
-            parent = new_fin
-
-        if scale is not None:
-            base_fin.setDefaultScale(scale)
-        return base_fin
-
     def animationUpdate(self):
         for i, wrap in enumerate(self.rotationRegistry):
             comp = wrap.comp
@@ -190,6 +165,10 @@ class Shark(Component, EnvironmentObject, CS680):
         # rotate animation
         # self.vAngle = (self.vAngle + 5) % 360
         # self.setCurrentPosition(self.defaultPos + Point((0, 0.5 * np.sin(self.vAngle / 180 * np.pi), 0)))
+        self.update()
 
-    def stepForward(self, components, tank_dimensions, vivarium):
+    def stepForward(self,
+                    components,
+                    tank_dimensions,
+                    vivarium):
         pass

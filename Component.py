@@ -273,6 +273,14 @@ class Component:
             self.setV([0, 1, 0])
             self.setW([0, 0, 1])
 
+    def setRotateExtents(self, uMin, uMax, vMin, vMax, wMin, wMax):
+        """
+        Factory function to set all the rotation extents
+        """
+        self.setRotateExtent(self.uAxis, uMin, uMax)
+        self.setRotateExtent(self.vAxis, vMin, vMax)
+        self.setRotateExtent(self.wAxis, wMin, wMax)
+
     def setRotateExtent(self, axis, minDeg=None, maxDeg=None):
         """
         set rotate extent range for axis rotation
@@ -382,12 +390,14 @@ class Component:
         :param scale: default scaling along three axes
         :return: None
         """
-        if not isinstance(scale, list) and not isinstance(scale, tuple):
-            raise TypeError("default scale should be list or tuple")
-        if len(scale) != 3:
+        if not isinstance(scale, list) and not isinstance(scale, tuple) and not isinstance(scale, np.ndarray):
+            raise TypeError("default scale should be list or tuple or np.ndarray")
+        if isinstance(scale, np.ndarray):
+            if len(scale.shape) != 1 or scale.shape[0] != 3:
+                raise TypeError("default scale should consists of scaling on 3 axis")
+            scale = scale.tolist()
+        elif len(scale) != 3:
             raise TypeError("default scale should consists of scaling on 3 axis")
-        """if min(scale) != max(scale):
-            raise ValueError("Component only accept uniform scaling")"""
         self.defaultScaling = copy.deepcopy(scale)
         self.currentScaling = copy.deepcopy(self.defaultScaling)
         self.update()
