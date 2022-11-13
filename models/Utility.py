@@ -11,6 +11,8 @@ import ColorType as Ct
 # define all the colors
 CodHeadColor = Ct.ColorType(155 / 255, 140 / 255, 114 / 255)
 CodBodyColor = Ct.ColorType(129 / 255, 104 / 255, 84 / 255)
+CodEyeColor = Ct.ColorType(142 / 255, 122 / 255, 99 / 255)
+CodPupilColor = Ct.ColorType(14.2 / 255, 95.9 / 255, 157.5 / 255)
 CodFin1Color = Ct.ColorType(84 / 255, 72 / 255, 53 / 255)
 CodFin2Color = Ct.ColorType(165 / 255, 147 / 255, 120 / 255)
 CodTail1Color = Ct.ColorType(142 / 255, 126 / 255, 106 / 255)

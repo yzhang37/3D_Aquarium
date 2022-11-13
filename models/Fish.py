@@ -6,17 +6,17 @@ from Component import CS680PA3
 from EnvironmentObject import EnvironmentObject
 from Shapes import *
 from models.Eye import Eye
-import models.Utility
+import models.Utility as Utility
 
 
-_headColor = Ct.PURPLE
-_eyeColor = Ct.WHITE
-_pupilColor = Ct.BLACK
-_bodyColor = Ct.RED
-_fin1Color = Ct.BLUE
-_fin2Color = Ct.GREEN
-_tail1Color = Ct.CYAN
-_tail2Color = Ct.YELLOW
+# _headColor = Utility.SalmonHeadColor
+# _eyeColor = Utility.SalmonEyeColor
+# _pupilColor = Utility.SalmonPupilColor
+# _bodyColor = Utility.SalmonBodyColor
+# _fin1Color = Utility.SalmonFin1Color
+# _fin2Color = Utility.SalmonFin2Color
+# _tail1Color = Utility.SalmonTail1Color
+# _tail2Color = Utility.SalmonTail2Color
 
 
 class Cod(Component, EnvironmentObject, CS680PA3):
@@ -25,12 +25,14 @@ class Cod(Component, EnvironmentObject, CS680PA3):
                  position: Point,
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None,
-                 headColor: Ct.ColorType = _headColor,
-                 bodyColor: Ct.ColorType = _bodyColor,
-                 fin1Color: Ct.ColorType = _fin1Color,
-                 fin2Color: Ct.ColorType = _fin2Color,
-                 tail1Color: Ct.ColorType = _tail1Color,
-                 tail2Color: Ct.ColorType = _tail2Color):
+                 headColor: Ct.ColorType = Utility.CodHeadColor,
+                 eyeColor: Ct.ColorType = Utility.CodEyeColor,
+                 pupilColor: Ct.ColorType = Utility.CodPupilColor,
+                 bodyColor: Ct.ColorType = Utility.CodBodyColor,
+                 fin1Color: Ct.ColorType = Utility.CodFin1Color,
+                 fin2Color: Ct.ColorType = Utility.CodFin2Color,
+                 tail1Color: Ct.ColorType = Utility.CodTail1Color,
+                 tail2Color: Ct.ColorType = Utility.CodTail2Color):
         Component.__init__(self, position)
         CS680PA3.__init__(self)
 
@@ -55,15 +57,15 @@ class Cod(Component, EnvironmentObject, CS680PA3):
 
         # define the eye
         eye_size = np.array([0.22, 0.22, 0.22])
-        eye1 = Eye(self, Point(((head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size)
+        eye1 = Eye(self, Point(((head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size, eyeColor, pupilColor)
         eye1.setDefaultAngle(90, eye1.vAxis)
         head.addChild(eye1)
-        eye2 = Eye(self, Point((-(head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size)
+        eye2 = Eye(self, Point((-(head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size, eyeColor, pupilColor)
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
 
         # Define the Pectoral Fin
-        pec_fin1 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
+        pec_fin1 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin1.setDefaultPosition(Point((
             body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
@@ -71,7 +73,7 @@ class Cod(Component, EnvironmentObject, CS680PA3):
         pec_fin1.setRotateExtent(pec_fin1.wAxis, -150, -120)
         self.rotationRegistry.append(CS680PA3.RotWrap(pec_fin1, [0, 0, -1]))
         body.addChild(pec_fin1)
-        pec_fin2 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
+        pec_fin2 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin2.setDefaultPosition(Point((
             -body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
@@ -130,14 +132,14 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
                  position: Point,
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None,
-                 headColor: Ct.ColorType = _headColor,
-                 eyeColor: Ct.ColorType = _eyeColor,
-                 pupilColor: Ct.ColorType = _pupilColor,
-                 bodyColor: Ct.ColorType = _bodyColor,
-                 fin1Color: Ct.ColorType = _fin1Color,
-                 fin2Color: Ct.ColorType = _fin2Color,
-                 tail1Color: Ct.ColorType = _tail1Color,
-                 tail2Color: Ct.ColorType = _tail2Color):
+                 headColor: Ct.ColorType = Utility.SalmonHeadColor,
+                 eyeColor: Ct.ColorType = Utility.SalmonEyeColor,
+                 pupilColor: Ct.ColorType = Utility.SalmonPupilColor,
+                 bodyColor: Ct.ColorType = Utility.SalmonBodyColor,
+                 fin1Color: Ct.ColorType = Utility.SalmonFin1Color,
+                 fin2Color: Ct.ColorType = Utility.SalmonFin2Color,
+                 tail1Color: Ct.ColorType = Utility.SalmonTail1Color,
+                 tail2Color: Ct.ColorType = Utility.SalmonTail2Color,):
         Component.__init__(self, position)
         CS680PA3.__init__(self)
 
@@ -178,7 +180,7 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
         head.addChild(eye2)
 
         # Define the Pectoral Fin
-        pec_fin1 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
+        pec_fin1 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin1.setDefaultPosition(Point((
             body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
@@ -186,7 +188,7 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
         pec_fin1.setRotateExtent(pec_fin1.wAxis, -150, -120)
         self.rotationRegistry.append(CS680PA3.RotWrap(pec_fin1, [0, 0, -1]))
         body1.addChild(pec_fin1)
-        pec_fin2 = models.Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
+        pec_fin2 = Utility.createFin(12, shaderProg, [1, 0.4, 0.4], fin2Color)
         pec_fin2.setDefaultPosition(Point((
             -body_size[0] / 2, -0.2, (body_size[2] - 0.4) / 2,
         )))
