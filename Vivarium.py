@@ -14,6 +14,7 @@ from Component import Component
 from ModelTank import Tank
 from EnvironmentObject import EnvironmentObject
 from ModelLinkage import Linkage
+from models import Shark, Salmon, Cod
 
 
 class Vivarium(Component):
@@ -38,7 +39,7 @@ class Vivarium(Component):
         self.shaderProg = shaderProg
 
         self.tank_dimensions = [4, 4, 4]
-        tank = Tank(Point((0,0,0)), shaderProg, self.tank_dimensions)
+        tank = Tank(Point((0, 0, 0)), shaderProg, self.tank_dimensions)
         super(Vivarium, self).__init__(Point((0, 0, 0)))
 
         # Build relationship
@@ -48,18 +49,26 @@ class Vivarium(Component):
         # Store all components in one list, for us to access them later
         self.components = [tank]
 
-        self.addNewObjInTank(Linkage(parent, Point((0,0,0)), shaderProg))
+        # add one shark as the predator
+        shark_size = np.array([1, 1, 1]) * 0.3
+        self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
+        fish_size = np.array([1, 1, 1]) * 0.15
+        init_pos = lambda: np.random.uniform(low=-2, high=2, size=(3,))
+        # add 8 fishes
+        for _ in range(2):
+            self.addNewObjInTank(Salmon(self, Point(init_pos()), shaderProg, fish_size))
+            self.addNewObjInTank(Cod(self, Point(init_pos()), shaderProg, fish_size))
 
     def animationUpdate(self):
         """
         Update all creatures in vivarium
         """
-            
+
         for c in self.components[::-1]:
             if isinstance(c, EnvironmentObject):
                 c.animationUpdate()
                 c.stepForward(self.components, self.tank_dimensions, self)
-        
+
         self.update()
 
     def delObjInTank(self, obj):
@@ -75,4 +84,3 @@ class Vivarium(Component):
         if isinstance(newComponent, EnvironmentObject):
             # add environment components list reference to this new object's
             newComponent.env_obj_list = self.components
-

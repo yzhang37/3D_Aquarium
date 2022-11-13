@@ -144,9 +144,12 @@ class Sketch(CanvasBase):
     def resetView(self):
         self.lookAtPt = [0, 0, 0]
         self.upVector = [0, 1, 0]
-        self.cameraDis = 12
-        self.cameraPhi = math.pi / 6
-        self.cameraTheta = math.pi / 2
+        # self.cameraDis = 12
+        # self.cameraPhi = math.pi / 6
+        # self.cameraTheta = math.pi / 2
+        self.cameraDis = 7.8
+        self.cameraPhi = 0.013598775598303803
+        self.cameraTheta = 0.900796326794896
 
     def InitGL(self):
         # self.texture = Texture()
@@ -364,6 +367,9 @@ class Sketch(CanvasBase):
             # reset viewing angle
             self.viewing_quaternion = Quaternion()
             self.update()
+        elif chr(keycode) in "pP":
+            print(self.cameraPhi)
+            print(self.cameraTheta)
 
 
 if __name__ == "__main__":

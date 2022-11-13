@@ -115,6 +115,9 @@ class Cod(Component, EnvironmentObject, CS680PA3):
         tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size2, tail2Color)
         tail_lower_conn.addChild(tail_upper)
 
+        if scale is not None:
+            self.setDefaultScale(scale)
+
     def animationUpdate(self):
         CS680PA3.animationUpdate(self)
         self.update()
@@ -224,6 +227,9 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
         tail_upper_conn.addChild(tail_upper)
         tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size2, tail2Color)
         tail_lower_conn.addChild(tail_upper)
+
+        if scale is not None:
+            self.setDefaultScale(scale)
 
     def animationUpdate(self):
         CS680PA3.animationUpdate(self)
