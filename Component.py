@@ -390,12 +390,14 @@ class Component:
         :param scale: default scaling along three axes
         :return: None
         """
-        if not isinstance(scale, list) and not isinstance(scale, tuple):
-            raise TypeError("default scale should be list or tuple")
-        if len(scale) != 3:
+        if not isinstance(scale, list) and not isinstance(scale, tuple) and not isinstance(scale, np.ndarray):
+            raise TypeError("default scale should be list or tuple or np.ndarray")
+        if isinstance(scale, np.ndarray):
+            if len(scale.shape) != 1 or scale.shape[0] != 3:
+                raise TypeError("default scale should consists of scaling on 3 axis")
+            scale = scale.tolist()
+        elif len(scale) != 3:
             raise TypeError("default scale should consists of scaling on 3 axis")
-        """if min(scale) != max(scale):
-            raise ValueError("Component only accept uniform scaling")"""
         self.defaultScaling = copy.deepcopy(scale)
         self.currentScaling = copy.deepcopy(self.defaultScaling)
         self.update()

@@ -44,7 +44,7 @@ class Cod(Component, EnvironmentObject, CS680):
         conn1.addChild(body)
 
         # define the eye
-        eye_size = [0.22, 0.22, 0.22]
+        eye_size = np.array([0.22, 0.22, 0.22])
         eye1 = Eye(self, Point(((head_size[0] - 0.15) / 2, 0, 0)), shaderProg, eye_size)
         eye1.setDefaultAngle(90, eye1.vAxis)
         head.addChild(eye1)
@@ -54,7 +54,14 @@ class Cod(Component, EnvironmentObject, CS680):
 
         # TODO: Define the Pectoral Fin
 
-        # TODO: Define the Dorsal Fins
+        # Define the Dorsal Fins
+        fin1_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.7]
+        fin1 = Cube(Point((0, body_size[1] / 2, -0.1)), shaderProg, fin1_size, finColor)
+        body.addChild(fin1)
+
+        fin2_size = body_size * [0.1, 0, 0] + [0, 0.45, 0.4]
+        fin2 = Cube(Point((0, body_size[1] / 2, (body_size[2] - fin2_size[2]) / 2)), shaderProg, fin2_size, finColor)
+        body.addChild(fin2)
 
         # TODO: Define the Anal Fins
 
@@ -103,3 +110,7 @@ class Cod(Component, EnvironmentObject, CS680):
                     tank_dimensions,
                     vivarium):
         pass
+
+
+class Salmon:
+    pass
