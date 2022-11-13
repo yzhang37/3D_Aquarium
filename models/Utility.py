@@ -8,6 +8,15 @@ from Shapes import *
 import ColorType as Ct
 
 
+# define all the colors
+CodHeadColor = Ct.ColorType(155 / 255, 140 / 255, 114 / 255)
+CodBodyColor = Ct.ColorType(129 / 255, 104 / 255, 84 / 255)
+CodFin1Color = Ct.ColorType(84 / 255, 72 / 255, 53 / 255)
+CodFin2Color = Ct.ColorType(165 / 255, 147 / 255, 120 / 255)
+CodTail1Color = Ct.ColorType(142 / 255, 126 / 255, 106 / 255)
+CodTail2Color = Ct.ColorType(165 / 255, 147 / 255, 120 / 255)
+
+
 def createFin(nums: int, shaderProg: GLProgram,
               scale: Union[List[float], Tuple[float, float, float], np.ndarray, None] = None,
               color: Ct.ColorType = Ct.RED) -> Component:
