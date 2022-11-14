@@ -20,7 +20,7 @@ class Quaternion:
     # vector components of this quaternion
     v = None
 
-    def __init__(self, s=1, v0=0, v1=0, v2=0):
+    def __init__(self, s: float = 1, v0: float = 0, v1: float = 0, v2: float = 0):
         self.v = [0, 0, 0]
         self.set(s, v0, v1, v2)
 
@@ -138,6 +138,25 @@ class Quaternion:
         q_matrix[2, 2] = 1 - 2 * a * a - 2 * b * b
         q_matrix[3, 3] = 1
         return q_matrix
+
+    def __repr__(self):
+        return f"Quaternion({self.s}, ({self.v[0]}, {self.v[1]}, {self.v[2]}))"
+
+    @staticmethod
+    def axisAngleToQuaternion(axis: Point, angle: float) -> "Quaternion":
+        """
+        turn axis and angle to Quaternion
+        :param axis: Point
+        :param angle: float
+        :return: a new Quaternion
+        :rtype: Quaternion
+        """
+        if not isinstance(axis, Point):
+            raise TypeError("axis must be a Point")
+        axis = axis.normalize().coords
+        angle = angle / 2
+        sin_val = math.sin(angle)
+        return Quaternion(math.cos(angle), axis[0] * sin_val, axis[1] * sin_val, axis[2] * sin_val)
 
 
 if __name__ == "__main__":

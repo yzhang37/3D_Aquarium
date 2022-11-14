@@ -159,7 +159,7 @@ class Point:
         ndp = 2 * self.dot(n)
         return self - ndp * n
 
-    def cross3d(self, anotherVector):
+    def cross3d(self, anotherVector) -> "Point":
         """
         cross product the vector with another vector
         """
@@ -169,6 +169,14 @@ class Point:
         s = self.coords
         d = anotherVector.coords
         return Point((s[1]*d[2]-s[2]*d[1], s[2]*d[0]-s[0]*d[2], s[0]*d[1]-s[1]*d[0]))
+
+    def angleWith(self, anotherVector) -> float:
+        """
+        get the angle between two vectors
+        """
+        if (self.coords is None) or (anotherVector.coords is None):
+            raise Exception("Error input argument for angle calculation. Only accept 3 dimension Point")
+        return np.arccos(self.dot(anotherVector) / (self.norm() * anotherVector.norm()))
 
     def setColor(self, color):
         """

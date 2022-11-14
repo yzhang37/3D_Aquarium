@@ -560,6 +560,9 @@ class CS680PA3(Component, EnvironmentObject):
     # define the current step orientation of the creature
     step_vector: Point = None
 
+    # define the current orientation of the creature
+    orientation: Point = None
+
     # define the food chain level, the smaller number represents the higher level
     food_chain_level: int = 0
 
@@ -572,6 +575,7 @@ class CS680PA3(Component, EnvironmentObject):
         self.rotationRegistry = []
         self.basic_boundary_center = Point((0, 0, 0))
         self.__boundary_center = self.basic_boundary_center
+        self.orientation = Point((0, 0, 1))
         self.step_vector = Point(np.random.normal(0, 1, 3)).normalize()
 
     def setCurrentScale(self, scale, check: bool = True):
@@ -650,12 +654,13 @@ class CS680PA3(Component, EnvironmentObject):
         # the object will move towards its own step_vector
         return self.step_vector * self.speed
 
-    def rotateDirection(self, v1: Point, v2: Point):
+    def rotateDirection(self):
         """
         change this environment object's orientation from v1 to v2.
-        :param v1: current facing direction
-        :type v1: Point
-        :param v2: targeted facing direction
-        :type v2: Point
         """
-        self.setPostRotation(np.identity(4))
+        v1 = self.orientation
+        v2 = self.step_vector
+        rotate_axis = v1.cross3d(v2)
+        rotate_angle = v1.angleWith(v2)
+        rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
+        self.setPostRotation(rotate_q.toMatrix())

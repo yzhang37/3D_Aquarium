@@ -71,6 +71,7 @@ class Vivarium(Component):
         for (c, step) in update_list:
             c.animationUpdate()
             c.currentPos += step
+            c.rotateDirection()
 
         self.update()
 
