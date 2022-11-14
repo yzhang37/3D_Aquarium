@@ -50,7 +50,7 @@ class Vivarium(Component):
         self.components = [tank]
 
         # add one shark as the predator
-        shark_size = np.array([1, 1, 1]) * 0.3
+        shark_size = np.array([1, 1, 1]) * 0.25
         self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
         fish_size = np.array([1, 1, 1]) * 0.1
         def init_pos(): return np.random.uniform(low=-1.5, high=1.5, size=(3,))
@@ -64,11 +64,21 @@ class Vivarium(Component):
         Update all creatures in vivarium
         """
         update_list = []
+        removed_item = set()
+
+        # first iterate all the objects
         for c in self.components[::-1]:
             if isinstance(c, EnvironmentObject):
-                update_list.append((c, c.stepForward(self.components, self.tank_dimensions, self)))
+                step, rem_list = c.stepForward(self.components, self.tank_dimensions, self)
+                update_list.append((c, step))
+                if rem_list is not None:
+                    removed_item.update(rem_list)
 
+        # then update and remove the objects
         for (c, step) in update_list:
+            if c in removed_item:
+                self.delObjInTank(c)
+                continue
             c.animationUpdate()
             c.currentPos += step
             c.rotateDirection()
