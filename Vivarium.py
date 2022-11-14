@@ -50,11 +50,11 @@ class Vivarium(Component):
         self.components = [tank]
 
         # add one shark as the predator
-        shark_size = np.array([1, 1, 1]) * 0.4
+        shark_size = np.array([1, 1, 1]) * 0.3
         self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
-        fish_size = np.array([1, 1, 1]) * 0.15
+        fish_size = np.array([1, 1, 1]) * 0.1
         def init_pos(): return np.random.uniform(low=-1.5, high=1.5, size=(3,))
-        # add 8 fishes
+        # add 4 fishes
         for _ in range(2):
             self.addNewObjInTank(Salmon(self, Point(init_pos()), shaderProg, fish_size))
             self.addNewObjInTank(Cod(self, Point(init_pos()), shaderProg, fish_size))

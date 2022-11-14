@@ -516,20 +516,31 @@ class Component:
         self.quat = None
 
 
-def f(x: np.ndarray) -> np.ndarray:
-    return 1 / np.exp(x ** 2)
-
-
-def d_f(x: np.ndarray) -> np.ndarray:
-    return -2 * x * np.exp(-x ** 2)
-
-
 def unit_v(vector: np.ndarray, tol: float = 1E-6) -> np.ndarray:
     norm = np.linalg.norm(vector)
     if norm == 0 or norm < abs(norm - 1.0) <= tol:
         return vector
     else:
         return vector / norm
+
+
+def d_lower_bound(n: float, log_n: float, x: np.ndarray) -> np.ndarray:
+    # compute the lower bound gradient descent function
+    # n: the number of exponent
+    # log_n: log(n), precomputed for reduced computation
+    # x: the input vector
+    # y = np.pow(n, -x)
+    return -log_n * (n ** -x)
+
+
+def d_upper_bound(n: float, log_n: float, x: np.ndarray) -> np.ndarray:
+    # y = np.pow(n, x)
+    return log_n * (n ** x)
+
+
+def d_dist(x: np.ndarray) -> np.ndarray:
+    # y = 1 / np.exp(x ** 2)
+    return -2 * x * np.exp(-x ** 2)
 
 
 class CS680PA3(Component, EnvironmentObject):
@@ -617,22 +628,23 @@ class CS680PA3(Component, EnvironmentObject):
                     vivarium: Component):
         # reflect when the object is near hit the tank.
         # this is the highest priority. If hit, we no longer do any more test.
-        tank_dimensions = np.array(tank_dimensions)
-        hit = False
         hit_test_pos = self.currentPos + self.boundary_center + self.step_vector * self.speed
-        for dim in range(3):
-            if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
-                    hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
-                self.step_vector.coords[dim] *= -1
-                hit = True
-        if hit:
-            # when actually do translation, we should not add the boundary_center inside it!
-            return self.step_vector * self.speed
+        tank_dimensions = np.array(tank_dimensions)
+        # hit = False
+        # for dim in range(3):
+        #     if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
+        #             hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
+        #         self.step_vector.coords[dim] *= -1
+        #         hit = True
+        # if hit:
+        #     # when actually do translation, we should not add the boundary_center inside it!
+        #     return self.step_vector * self.speed
 
         overall_velocity = np.zeros(3)
         # we add the potential functions for the walls, to avoid objects run towards the tank walls
-        wall_drv_step = d_f(tank_dimensions / 2 - hit_test_pos.coords) + d_f(tank_dimensions / 2 + hit_test_pos.coords)
-        overall_velocity -= wall_drv_step * 0.002
+        wall_drv_step = d_upper_bound(30, 3.4012, hit_test_pos.coords - tank_dimensions / 2)
+        wall_drv_step += d_lower_bound(30, 3.4012, hit_test_pos.coords + tank_dimensions / 2)
+        overall_velocity -= wall_drv_step * 0.08
 
         # now compute the potential functions between objects
         for comp in components:
@@ -643,10 +655,10 @@ class CS680PA3(Component, EnvironmentObject):
                 # chasing and escaping
                 if self.food_chain_level < comp.food_chain_level:
                     # chasing
-                    overall_velocity += d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
+                    overall_velocity += d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
                 elif self.food_chain_level > comp.food_chain_level:
                     # escaping
-                    overall_velocity -= d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
+                    overall_velocity -= d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
 
         self.step_vector += Point(overall_velocity)
         self.step_vector = self.step_vector.normalize()
