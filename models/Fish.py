@@ -117,6 +117,7 @@ class Cod(CS680PA3):
         self.basic_boundary_radius = 1.6
         self.basic_speed = 0.3
         self.basic_boundary_center = Point((0, 0, -1.2))
+        self.food_chain_level = 200
 
         if scale is not None:
             self.setDefaultScale(scale)
@@ -224,6 +225,7 @@ class Salmon(CS680PA3):
         self.basic_boundary_radius = 2
         self.basic_speed = 0.3
         self.basic_boundary_center = Point((0, 0, -1.7))
+        self.food_chain_level = 200
 
         if scale is not None:
                 self.setDefaultScale(scale)

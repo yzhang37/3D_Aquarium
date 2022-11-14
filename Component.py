@@ -519,11 +519,11 @@ class Component:
 
 
 def f(x: np.ndarray) -> np.ndarray:
-    return 1 / (x + 0.02)
+    return 1 / (x + 0.2)
 
 
 def d_f(x: np.ndarray) -> np.ndarray:
-    return -2 * x / (x ** 2 + 0.02) ** 2
+    return -2 * x / (x ** 2 + 0.2) ** 2
 
 
 def unit_v(vector: np.ndarray) -> np.ndarray:
@@ -545,13 +545,27 @@ class CS680PA3(Component, EnvironmentObject):
             self.rotation_speed = rotation_speed
 
     componentDict: Dict[str, Component] = None
+    # Rotation handling registry to record information about
+    # each part and the speed at which it needs to be rotated.
     rotationRegistry: List[RotWrap] = None
+
+    # define the relative boundary of each component
     basic_boundary_radius: float = 1.0
+
+    # define the center within the boundary of each component
     basic_boundary_center: Point = None
+
+    # define the speed of the creature
     basic_speed: float = 0.5
+
+    # define the current step orientation of the creature
+    step_vector: Point = None
+
+    # define the food chain level, the smaller number represents the higher level
+    food_chain_level: int = 0
+
     __cur_max_scale: float = 1.0
     __boundary_center: Point = None
-    step_vector: Point = None
 
     def __init__(self, position):
         Component.__init__(self, position)
@@ -616,7 +630,23 @@ class CS680PA3(Component, EnvironmentObject):
         # we add the potential functions for the walls, to avoid objects run towards the tank walls
         wall_drv_step = d_f(tank_dimensions / 2 - hit_test_pos.coords) + d_f(tank_dimensions / 2 + hit_test_pos.coords)
         overall_velocity -= wall_drv_step * 0.02
+
         # now compute the potential functions between objects
+        for comp in components:
+            if comp is not self and isinstance(comp, CS680PA3):
+                # this is another creature
+                new_object_test_pos = comp.currentPos + comp.boundary_center + comp.step_vector * comp.speed
+
+                # chasing and escaping
+                if self.food_chain_level < comp.food_chain_level:
+                    # chasing
+                    result = +d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.5
+                    overall_velocity += result
+                    pass
+                elif self.food_chain_level > comp.food_chain_level:
+                    # escaping
+                    result = -d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.5
+                    overall_velocity += result
 
         self.step_vector += Point(unit_v(overall_velocity))
         self.step_vector = self.step_vector.normalize()
