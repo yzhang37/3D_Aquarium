@@ -378,7 +378,7 @@ if __name__ == "__main__":
     # Set FULL_REPAINT_ON_RESIZE will repaint everything when scaling the frame,
     # here is the style setting for it: wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE
     # Resize disabled in this one
-    frame = wx.Frame(None, size=(500, 500), title="Test",
+    frame = wx.Frame(None, size=(500, 500), title="3D Vivarium",
                      style=wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE)  # Disable Resize: ^ wx.RESIZE_BORDER
     canvas = Sketch(frame)
 
