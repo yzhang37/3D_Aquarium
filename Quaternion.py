@@ -8,6 +8,8 @@ import time
 import math
 import numpy as np
 
+from Point import Point
+
 
 class Quaternion:
     """
@@ -42,7 +44,7 @@ class Quaternion:
         self.v[1] = v1
         self.v[2] = v2
 
-    def multiply(self, q):
+    def multiply(self, q) -> "Quaternion":
         """
         multiply with another Quaternion and return a new quaternion
 
@@ -58,6 +60,28 @@ class Quaternion:
         new_v1 = (self.s * q.v[1]) + (q.s * self.v[1]) + (self.v[2] * q.v[0] - self.v[0] * q.v[2])
         new_v2 = (self.s * q.v[2]) + (q.s * self.v[2]) + (self.v[0] * q.v[1] - self.v[1] * q.v[0])
         return Quaternion(new_s, new_v0, new_v1, new_v2)
+
+    def multiplyPoint(self, point: Point) -> Point:
+        """
+        multiply a vector (Point) with this quaternion,
+        and return a new Point object (ignore the scalar part of this quaternion)
+        :param point: Point
+        :return: a new Point
+        """
+        d = point.coords
+        q2 = Quaternion(0, d[0], d[1], d[2])
+        q = self.multiply(q2)
+        q = q.multiply(self.conjugate())
+        return Point(q.v[0], q.v[1], q.v[2])
+
+    def conjugate(self) -> "Quaternion":
+        """
+        conjugate of this quaternion
+
+        :return: a new Quaternion
+        :rtype: Quaternion
+        """
+        return Quaternion(self.s, -self.v[0], -self.v[1], -self.v[2])
 
     def norm(self):
         """

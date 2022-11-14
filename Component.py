@@ -8,7 +8,6 @@ First version in 11/01/2021
 Modified by Daniel Scrivener 07/2022
 """
 import copy
-import math
 import os
 from typing import *
 from typing import Union
@@ -16,7 +15,6 @@ from typing import Union
 import numpy as np
 from PIL import Image
 
-import GLBuffer
 from EnvironmentObject import EnvironmentObject
 from GLProgram import GLProgram
 from Point import Point
@@ -526,11 +524,12 @@ def d_f(x: np.ndarray) -> np.ndarray:
     return -2 * x * np.exp(-x ** 2)
 
 
-def unit_v(vector: np.ndarray) -> np.ndarray:
+def unit_v(vector: np.ndarray, tol: float = 1E-6) -> np.ndarray:
     norm = np.linalg.norm(vector)
-    if norm == 0:
+    if norm == 0 or norm < abs(norm - 1.0) <= tol:
         return vector
-    return vector / norm
+    else:
+        return vector / norm
 
 
 class CS680PA3(Component, EnvironmentObject):
@@ -650,3 +649,13 @@ class CS680PA3(Component, EnvironmentObject):
 
         # the object will move towards its own step_vector
         return self.step_vector * self.speed
+
+    def rotateDirection(self, v1: Point, v2: Point):
+        """
+        change this environment object's orientation from v1 to v2.
+        :param v1: current facing direction
+        :type v1: Point
+        :param v2: targeted facing direction
+        :type v2: Point
+        """
+        self.setPostRotation(np.identity(4))

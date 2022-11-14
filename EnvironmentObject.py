@@ -60,7 +60,7 @@ class EnvironmentObject:
         #   direction in which it swims. Remember that we require your creatures to be movable in 3 dimensions,
         #   so they should be able to face any direction in 3D space.
         
-    def rotateDirection(self, v1, v2):
+    def rotateDirection(self, v1: Point, v2: Point):
         """
         change this environment object's orientation from v1 to v2.
         :param v1: current facing direction
@@ -68,4 +68,4 @@ class EnvironmentObject:
         :param v2: targeted facing direction
         :type v2: Point
         """
-        self.setPostRotation(np.identity(4))
+        pass
