@@ -118,7 +118,7 @@ class Linkage(Component, EnvironmentObject):
 
     def stepForward(self, components, tank_dimensions, vivarium):
 
-        ##### TODO 3: Interact with the environment
+        ##### Interact with the environment
         # Requirements:
         #   1. Your creatures should always stay within the fixed size 3D "tank". You should do collision detection
         #   between it and tank walls. When it hits with tank walls, it should turn and change direction to stay

@@ -26,6 +26,11 @@ SalmonFin2Color = Ct.ColorType(151 / 255, 159 / 255, 63 / 255)
 SalmonTail1Color = Ct.ColorType(147 / 255, 116 / 255, 78 / 255)
 SalmonTail2Color = Ct.ColorType(125 / 255, 90 / 255, 55 / 255)
 
+# fish food color
+FishFood1Color = Ct.ColorType(142 / 255, 72 / 255, 63 / 255)
+FishFood2Color = Ct.ColorType(29 / 255, 20 / 255, 18 / 255)
+FishFood3Color = Ct.ColorType(93 / 255, 69 / 255, 41 / 255)
+FishFood4Color = Ct.ColorType(53 / 255, 69 / 255, 47 / 255)
 
 def createFin(nums: int, shaderProg: GLProgram,
               scale: Union[List[float], Tuple[float, float, float], np.ndarray, None] = None,

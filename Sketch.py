@@ -373,6 +373,9 @@ class Sketch(CanvasBase):
         elif chr(keycode) in "aA":
             self.vivarium.addFish()
             self.update()
+        elif chr(keycode) in "fF":
+            self.vivarium.addFood()
+            self.update()
 
 
 if __name__ == "__main__":

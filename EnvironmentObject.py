@@ -58,7 +58,7 @@ class EnvironmentObject:
         """
         return Point((0, 0, 0)), None
 
-    ##### TODO 4: Eyes on the road!
+    ##### Eyes on the road!
         # Requirements:
         #   1. Creatures should face in the direction they are moving. For instance, a fish should be facing the
         #   direction in which it swims. Remember that we require your creatures to be movable in 3 dimensions,

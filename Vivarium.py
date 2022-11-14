@@ -14,7 +14,7 @@ from Component import Component
 from ModelTank import Tank
 from EnvironmentObject import EnvironmentObject
 from ModelLinkage import Linkage
-from models import Shark, Salmon, Cod
+from models import Shark, Salmon, Cod, Food
 
 
 class Vivarium(Component):
@@ -26,7 +26,7 @@ class Vivarium(Component):
     tank = None
     tank_dimensions = None
 
-    ##### BONUS 5(TODO 5 for CS680 Students): Feed your creature
+    ## BONUS 5(for CS680 Students): Feed your creature
     # Requirements:
     #   Add chunks of food to the vivarium which can be eaten by your creatures.
     #     * When ‘f’ is pressed, have a food particle be generated at random within the vivarium.
@@ -34,7 +34,8 @@ class Vivarium(Component):
     #     the vivarium and remain there within the tank until eaten.
     #     * The food should disappear once it has been eaten. Food is eaten by the first creature that touches it.
 
-    _fish_size = np.array([1, 1, 1]) * 0.1
+    _fish_size = np.ones(3) * 0.1
+    _food_size = np.ones(3) * 0.07
 
     def __init__(self, parent, shaderProg):
         self.parent = parent
@@ -59,16 +60,29 @@ class Vivarium(Component):
             self.addFish()
 
     @staticmethod
-    def init_pos():
+    def init_fish_pos():
         return np.random.uniform(low=-1.5, high=1.5, size=(3,))
 
+    @staticmethod
+    def init_fish_food_pos():
+        return np.array([
+            np.random.uniform(low=-1.2, high=1.2),
+            np.random.uniform(low=1, high=1.8),
+            np.random.uniform(low=-1.2, high=1.2)
+        ])
+
     def addFish(self):
-        salmon = Salmon(self, Point(self.init_pos()), self.shaderProg, self._fish_size)
+        salmon = Salmon(self, Point(self.init_fish_pos()), self.shaderProg, self._fish_size)
         salmon.initialize()
         self.addNewObjInTank(salmon)
-        cod = Cod(self, Point(self.init_pos()), self.shaderProg, self._fish_size)
+        cod = Cod(self, Point(self.init_fish_pos()), self.shaderProg, self._fish_size)
         cod.initialize()
         self.addNewObjInTank(cod)
+
+    def addFood(self):
+        food = Food(self, Point(self.init_fish_food_pos()), self.shaderProg, self._food_size)
+        food.initialize()
+        self.addNewObjInTank(food)
 
     def animationUpdate(self):
         """
