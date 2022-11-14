@@ -143,6 +143,8 @@ class Shark(CS680PA3):
         head.addChild(eye2)
 
         self.basic_boundary_radius = 2.0
+        self.basic_boundary_center = Point((0, 0, 0))
+        self.basic_speed = 0.05
 
         if scale is not None:
             self.setDefaultScale(scale)

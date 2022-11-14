@@ -114,7 +114,9 @@ class Cod(CS680PA3):
         tail_lower_conn.addChild(tail_upper)
 
         # set basic boundary radius
-        self.basic_boundary_radius = 2
+        self.basic_boundary_radius = 1.6
+        self.basic_speed = 0.3
+        self.basic_boundary_center = Point((0, 0, -1.2))
 
         if scale is not None:
             self.setDefaultScale(scale)
@@ -219,7 +221,9 @@ class Salmon(CS680PA3):
         tail_lower_conn.addChild(tail_upper)
 
         # set basic boundary radius
-        self.basic_boundary_radius = 3
+        self.basic_boundary_radius = 2
+        self.basic_speed = 0.3
+        self.basic_boundary_center = Point((0, 0, -1.7))
 
         if scale is not None:
-            self.setDefaultScale(scale)
+                self.setDefaultScale(scale)

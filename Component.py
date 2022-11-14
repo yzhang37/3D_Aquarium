@@ -532,17 +532,24 @@ class CS680PA3(Component, EnvironmentObject):
     componentDict: Dict[str, Component] = None
     rotationRegistry: List[RotWrap] = None
     basic_boundary_radius: float = 1.0
+    basic_boundary_center: Point = None
     basic_speed: float = 0.5
     __cur_max_scale: float = 1.0
+    __boundary_center: Point = None
+    step_vector: Point = None
 
     def __init__(self, position):
         Component.__init__(self, position)
         self.componentDict = {}
         self.rotationRegistry = []
+        self.basic_boundary_center = Point((0, 0, 0))
+        self.__boundary_center = self.basic_boundary_center
+        self.step_vector = Point(np.random.normal(0, 1, 3)).normalize()
 
     def setCurrentScale(self, scale, check: bool = True):
         super().setCurrentScale(scale, check)
         self.__cur_max_scale = max(scale)
+        self.__boundary_center = Point(self.basic_boundary_center.coords * scale)
 
     @property
     def boundary_radius(self) -> float:
@@ -551,6 +558,10 @@ class CS680PA3(Component, EnvironmentObject):
     @property
     def speed(self) -> float:
         return self.basic_speed * self.__cur_max_scale
+
+    @property
+    def boundary_center(self) -> Point:
+        return self.__boundary_center
 
     def animationUpdate(self):
         for i, wrap in enumerate(self.rotationRegistry):
@@ -569,8 +580,25 @@ class CS680PA3(Component, EnvironmentObject):
         self.update()
 
     def stepForward(self,
-                    components,
-                    tank_dimensions,
-                    vivarium):
+                    components: List[Component],
+                    tank_dimensions: List[float],
+                    vivarium: Component):
+        # reflect when the object is near hit the tank.
+        # this is the highest priority. If hit, we no longer do any more test.
+        hit = False
+        hit_test_pos = self.currentPos + self.boundary_center + self.step_vector * self.speed
+        for dim in range(3):
+            if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
+               hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
+                self.step_vector.coords[dim] *= -1
+                hit = True
+        if hit:
+            # when actually do translation, we should not add the boundary_center inside it!
+            self.currentPos += self.step_vector * self.speed
+            return
 
+        
+
+        # the object will move towards it's own step_vector
+        self.currentPos += self.step_vector * self.speed
         pass
