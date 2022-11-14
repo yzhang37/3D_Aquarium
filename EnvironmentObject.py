@@ -8,10 +8,9 @@ Created on Nov 1, 2018
 modified by Daniel Scrivener 08/2022
 '''
 
-import math
+
 from Point import Point
-from Quaternion import Quaternion
-import numpy as np
+from typing import *
 
 
 class EnvironmentObject:
@@ -48,11 +47,16 @@ class EnvironmentObject:
     def stepForward(self,
                     components,
                     tank_dimensions,
-                    vivarium) -> Point:
+                    vivarium) -> Tuple[Point,
+                                       Optional[List["EnvironmentObject"]]]:
         """
-        Have this environment object take a step forward in the simulation.
+
+        :param components:
+        :param tank_dimensions:
+        :param vivarium:
+        :return: The step forward vector, and a list of items to be removed.
         """
-        return Point((0, 0, 0))
+        return Point((0, 0, 0)), None
 
     ##### TODO 4: Eyes on the road!
         # Requirements:

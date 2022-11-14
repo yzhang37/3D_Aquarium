@@ -370,6 +370,9 @@ class Sketch(CanvasBase):
         elif chr(keycode) in "pP":
             print(self.cameraPhi)
             print(self.cameraTheta)
+        elif chr(keycode) in "aA":
+            self.vivarium.addFish()
+            self.update()
 
 
 if __name__ == "__main__":

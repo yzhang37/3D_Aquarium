@@ -142,7 +142,7 @@ class Shark(CS680PA3):
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
 
-        self.basic_boundary_radius = 2.0
+        self.basic_boundary_radius = 1.8
         self.basic_boundary_center = Point((0, 0, 0))
         self.basic_speed = 0.05
         self.food_chain_level = 100

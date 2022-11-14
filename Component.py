@@ -638,33 +638,46 @@ class CS680PA3(Component, EnvironmentObject):
         #         hit = True
         # if hit:
         #     # when actually do translation, we should not add the boundary_center inside it!
-        #     return self.step_vector * self.speed
+        #     return self.step_vector * self.speed, None
 
         overall_velocity = np.zeros(3)
         # we add the potential functions for the walls, to avoid objects run towards the tank walls
         wall_drv_step = d_upper_bound(30, 3.4012, hit_test_pos.coords - tank_dimensions / 2)
         wall_drv_step += d_lower_bound(30, 3.4012, hit_test_pos.coords + tank_dimensions / 2)
-        overall_velocity -= wall_drv_step * 0.08
+        overall_velocity -= wall_drv_step * 0.09
 
         # now compute the potential functions between objects
+        item_to_delete = []
         for comp in components:
             if comp is not self and isinstance(comp, CS680PA3):
                 # this is another creature
                 new_object_test_pos = comp.currentPos + comp.boundary_center + comp.step_vector * comp.speed
+                dist_vec = new_object_test_pos - hit_test_pos
+                dist = np.sqrt(np.sum(dist_vec.coords ** 2))
+
+                # Collision
+                if dist < self.boundary_radius + comp.boundary_radius:
+                    # if the food chain level is equal:
+                    if self.food_chain_level == comp.food_chain_level:
+                        self.step_vector = self.step_vector.reflect(dist_vec.normalize())
+                        self.step_vector = self.step_vector.normalize()
+                        return self.step_vector * self.speed, None
+                    elif self.food_chain_level < comp.food_chain_level:
+                        item_to_delete.append(comp)
 
                 # chasing and escaping
                 if self.food_chain_level < comp.food_chain_level:
                     # chasing
-                    overall_velocity += d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
+                    overall_velocity += d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.05
                 elif self.food_chain_level > comp.food_chain_level:
                     # escaping
-                    overall_velocity -= d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
+                    overall_velocity -= d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.04
 
         self.step_vector += Point(overall_velocity)
         self.step_vector = self.step_vector.normalize()
 
         # the object will move towards its own step_vector
-        return self.step_vector * self.speed
+        return self.step_vector * self.speed, item_to_delete
 
     def rotateDirection(self):
         """

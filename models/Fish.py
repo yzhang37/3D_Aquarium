@@ -228,4 +228,4 @@ class Salmon(CS680PA3):
         self.food_chain_level = 200
 
         if scale is not None:
-                self.setDefaultScale(scale)
+            self.setDefaultScale(scale)
