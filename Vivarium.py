@@ -34,6 +34,8 @@ class Vivarium(Component):
     #     the vivarium and remain there within the tank until eaten.
     #     * The food should disappear once it has been eaten. Food is eaten by the first creature that touches it.
 
+    _fish_size = np.array([1, 1, 1]) * 0.1
+
     def __init__(self, parent, shaderProg):
         self.parent = parent
         self.shaderProg = shaderProg
@@ -52,12 +54,21 @@ class Vivarium(Component):
         # add one shark as the predator
         shark_size = np.array([1, 1, 1]) * 0.25
         self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
-        fish_size = np.array([1, 1, 1]) * 0.1
-        def init_pos(): return np.random.uniform(low=-1.5, high=1.5, size=(3,))
         # add 4 fishes
         for _ in range(2):
-            self.addNewObjInTank(Salmon(self, Point(init_pos()), shaderProg, fish_size))
-            self.addNewObjInTank(Cod(self, Point(init_pos()), shaderProg, fish_size))
+            self.addFish()
+
+    @staticmethod
+    def init_pos():
+        return np.random.uniform(low=-1.5, high=1.5, size=(3,))
+
+    def addFish(self):
+        salmon = Salmon(self, Point(self.init_pos()), self.shaderProg, self._fish_size)
+        salmon.initialize()
+        self.addNewObjInTank(salmon)
+        cod = Cod(self, Point(self.init_pos()), self.shaderProg, self._fish_size)
+        cod.initialize()
+        self.addNewObjInTank(cod)
 
     def animationUpdate(self):
         """
