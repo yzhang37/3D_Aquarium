@@ -3,7 +3,6 @@ import typing
 
 import ColorType as Ct
 from Component import CS680PA3
-from EnvironmentObject import EnvironmentObject
 from Shapes import *
 from models.Eye import Eye
 import models.Utility as Utility
@@ -19,7 +18,7 @@ import models.Utility as Utility
 # _tail2Color = Utility.SalmonTail2Color
 
 
-class Cod(Component, EnvironmentObject, CS680PA3):
+class Cod(CS680PA3):
     def __init__(self,
                  parent: Component,
                  position: Point,
@@ -33,8 +32,7 @@ class Cod(Component, EnvironmentObject, CS680PA3):
                  fin2Color: Ct.ColorType = Utility.CodFin2Color,
                  tail1Color: Ct.ColorType = Utility.CodTail1Color,
                  tail2Color: Ct.ColorType = Utility.CodTail2Color):
-        Component.__init__(self, position)
-        CS680PA3.__init__(self)
+        CS680PA3.__init__(self, position)
 
         # define the head
         head_size = np.array([0.6, 0.9, 0.8])
@@ -115,21 +113,14 @@ class Cod(Component, EnvironmentObject, CS680PA3):
         tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size2, tail2Color)
         tail_lower_conn.addChild(tail_upper)
 
+        # set basic boundary radius
+        self.basic_boundary_radius = 2
+
         if scale is not None:
             self.setDefaultScale(scale)
 
-    def animationUpdate(self):
-        CS680PA3.animationUpdate(self)
-        self.update()
 
-    def stepForward(self,
-                    components,
-                    tank_dimensions,
-                    vivarium):
-        pass
-
-
-class Salmon(Component, EnvironmentObject, CS680PA3):
+class Salmon(CS680PA3):
     def __init__(self,
                  parent: Component,
                  position: Point,
@@ -143,8 +134,7 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
                  fin2Color: Ct.ColorType = Utility.SalmonFin2Color,
                  tail1Color: Ct.ColorType = Utility.SalmonTail1Color,
                  tail2Color: Ct.ColorType = Utility.SalmonTail2Color,):
-        Component.__init__(self, position)
-        CS680PA3.__init__(self)
+        CS680PA3.__init__(self, position)
 
         # define the head
         head_size = np.array([0.6, 0.9, 0.8])
@@ -228,15 +218,8 @@ class Salmon(Component, EnvironmentObject, CS680PA3):
         tail_upper = Cube(Point((0, 0, -tail_size1[2] / 2)), shaderProg, tail_size2, tail2Color)
         tail_lower_conn.addChild(tail_upper)
 
+        # set basic boundary radius
+        self.basic_boundary_radius = 3
+
         if scale is not None:
             self.setDefaultScale(scale)
-
-    def animationUpdate(self):
-        CS680PA3.animationUpdate(self)
-        self.update()
-
-    def stepForward(self,
-                    components,
-                    tank_dimensions,
-                    vivarium):
-        pass

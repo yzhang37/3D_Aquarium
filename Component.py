@@ -17,6 +17,7 @@ import numpy as np
 from PIL import Image
 
 import GLBuffer
+from EnvironmentObject import EnvironmentObject
 from GLProgram import GLProgram
 from Point import Point
 from ColorType import ColorType
@@ -266,7 +267,7 @@ class Component:
         if mode in ["position", "all"]:
             self.currentPos = self.defaultPos
         if mode in ["scale", "all"]:
-            self.currentScaling = copy.deepcopy(self.defaultScaling)
+            self.setCurrentScale(self.defaultScaling, check=False)
         if mode in ["rotationAxis", "all"]:
             self.setPreRotation(np.identity(4, dtype=np.double))
             self.setU([1, 0, 0])
@@ -399,8 +400,7 @@ class Component:
         elif len(scale) != 3:
             raise TypeError("default scale should consists of scaling on 3 axis")
         self.defaultScaling = copy.deepcopy(scale)
-        self.currentScaling = copy.deepcopy(self.defaultScaling)
-        self.update()
+        self.setCurrentScale(self.defaultScaling, check=False)
 
     def setDefaultColor(self, color):
         """
@@ -442,18 +442,20 @@ class Component:
         else:
             raise TypeError(f"color should have type ColorType, Tuple, or list, not {type(color)}")
 
-    def setCurrentScale(self, scale):
+    def setCurrentScale(self, scale, check: bool = True):
         """
         Set scaling along three axes
+        :param check:
         :param scale: scaling along three axes
         :return: None
         """
-        if not isinstance(scale, list) and not isinstance(scale, tuple):
-            raise TypeError("current scale should be list or tuple")
-        if len(scale) != 3:
-            raise TypeError("current scale should consists of scaling on 3 axis")
-        if min(scale) != max(scale):
-            raise ValueError("Component only accept uniform scaling")
+        if check:
+            if not isinstance(scale, list) and not isinstance(scale, tuple):
+                raise TypeError("current scale should be list or tuple")
+            if len(scale) != 3:
+                raise TypeError("current scale should consists of scaling on 3 axis")
+            if min(scale) != max(scale):
+                raise ValueError("Component only accept uniform scaling")
         self.currentScaling = copy.deepcopy(scale)
         self.update()
 
@@ -516,7 +518,7 @@ class Component:
         self.quat = None
 
 
-class CS680PA3:
+class CS680PA3(Component, EnvironmentObject):
     class RotWrap:
         comp: Component = None
         rotation_speed: Union[List[float], Tuple[float, float, float]] = None
@@ -529,10 +531,26 @@ class CS680PA3:
 
     componentDict: Dict[str, Component] = None
     rotationRegistry: List[RotWrap] = None
+    basic_boundary_radius: float = 1.0
+    basic_speed: float = 0.5
+    __cur_max_scale: float = 1.0
 
-    def __init__(self):
+    def __init__(self, position):
+        Component.__init__(self, position)
         self.componentDict = {}
         self.rotationRegistry = []
+
+    def setCurrentScale(self, scale, check: bool = True):
+        super().setCurrentScale(scale, check)
+        self.__cur_max_scale = max(scale)
+
+    @property
+    def boundary_radius(self) -> float:
+        return self.basic_boundary_radius * self.__cur_max_scale
+
+    @property
+    def speed(self) -> float:
+        return self.basic_speed * self.__cur_max_scale
 
     def animationUpdate(self):
         for i, wrap in enumerate(self.rotationRegistry):
@@ -548,3 +566,11 @@ class CS680PA3:
                 speed[1] *= -1
             if comp.wAngle in comp.wRange:
                 speed[2] *= -1
+        self.update()
+
+    def stepForward(self,
+                    components,
+                    tank_dimensions,
+                    vivarium):
+
+        pass

@@ -6,7 +6,7 @@ import ColorType as Ct
 from Shapes import Sphere
 
 
-class Eye(Component, CS680PA3):
+class Eye(Component):
     def __init__(self,
                  parent: Component,
                  position: Point,

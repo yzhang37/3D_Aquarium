@@ -1,6 +1,5 @@
 import typing
 from Component import CS680PA3
-from EnvironmentObject import EnvironmentObject
 from Shapes import *
 import ColorType as Ct
 import numpy as np
@@ -9,7 +8,7 @@ import models.Utility
 from models.Eye import Eye
 
 
-class Shark(Component, EnvironmentObject, CS680PA3):
+class Shark(CS680PA3):
     """
     Define how the shark model is written.
     - [x] Head
@@ -28,8 +27,7 @@ class Shark(Component, EnvironmentObject, CS680PA3):
                  position: Point,
                  shaderProg: GLProgram,
                  scale: typing.Optional[typing.Iterator] = None):
-        Component.__init__(self, position)
-        CS680PA3.__init__(self)
+        CS680PA3.__init__(self, position)
 
         # define the colors
         SHARK_GREY = Ct.ColorType(0.243, 0.275, 0.376)
@@ -144,18 +142,13 @@ class Shark(Component, EnvironmentObject, CS680PA3):
         eye2.setDefaultAngle(-90, eye2.vAxis)
         head.addChild(eye2)
 
+        self.basic_boundary_radius = 2.0
+
         if scale is not None:
             self.setDefaultScale(scale)
 
     def animationUpdate(self):
-        CS680PA3.animationUpdate(self)
         # rotate animation
         # self.vAngle = (self.vAngle + 5) % 360
         # self.setCurrentPosition(self.defaultPos + Point((0, 0.5 * np.sin(self.vAngle / 180 * np.pi), 0)))
-        self.update()
-
-    def stepForward(self,
-                    components,
-                    tank_dimensions,
-                    vivarium):
-        pass
+        super().animationUpdate()
