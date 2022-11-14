@@ -519,11 +519,11 @@ class Component:
 
 
 def f(x: np.ndarray) -> np.ndarray:
-    return 1 / (x + 0.2)
+    return 1 / np.exp(x ** 2)
 
 
 def d_f(x: np.ndarray) -> np.ndarray:
-    return -2 * x / (x ** 2 + 0.2) ** 2
+    return -2 * x * np.exp(-x ** 2)
 
 
 def unit_v(vector: np.ndarray) -> np.ndarray:
@@ -629,7 +629,7 @@ class CS680PA3(Component, EnvironmentObject):
         overall_velocity = np.zeros(3)
         # we add the potential functions for the walls, to avoid objects run towards the tank walls
         wall_drv_step = d_f(tank_dimensions / 2 - hit_test_pos.coords) + d_f(tank_dimensions / 2 + hit_test_pos.coords)
-        overall_velocity -= wall_drv_step * 0.02
+        overall_velocity -= wall_drv_step * 0.002
 
         # now compute the potential functions between objects
         for comp in components:
@@ -640,15 +640,12 @@ class CS680PA3(Component, EnvironmentObject):
                 # chasing and escaping
                 if self.food_chain_level < comp.food_chain_level:
                     # chasing
-                    result = +d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.5
-                    overall_velocity += result
-                    pass
+                    overall_velocity += d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
                 elif self.food_chain_level > comp.food_chain_level:
                     # escaping
-                    result = -d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.5
-                    overall_velocity += result
+                    overall_velocity -= d_f(hit_test_pos.coords - new_object_test_pos.coords) * 0.02
 
-        self.step_vector += Point(unit_v(overall_velocity))
+        self.step_vector += Point(overall_velocity)
         self.step_vector = self.step_vector.normalize()
 
         # the object will move towards its own step_vector
