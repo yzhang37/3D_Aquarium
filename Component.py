@@ -518,6 +518,21 @@ class Component:
         self.quat = None
 
 
+def f(x: np.ndarray) -> np.ndarray:
+    return 1 / (x + 0.02)
+
+
+def d_f(x: np.ndarray) -> np.ndarray:
+    return -2 * x / (x ** 2 + 0.02) ** 2
+
+
+def unit_v(vector: np.ndarray) -> np.ndarray:
+    norm = np.linalg.norm(vector)
+    if norm == 0:
+        return vector
+    return vector / norm
+
+
 class CS680PA3(Component, EnvironmentObject):
     class RotWrap:
         comp: Component = None
@@ -585,20 +600,26 @@ class CS680PA3(Component, EnvironmentObject):
                     vivarium: Component):
         # reflect when the object is near hit the tank.
         # this is the highest priority. If hit, we no longer do any more test.
+        tank_dimensions = np.array(tank_dimensions)
         hit = False
         hit_test_pos = self.currentPos + self.boundary_center + self.step_vector * self.speed
         for dim in range(3):
             if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
-               hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
+                    hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
                 self.step_vector.coords[dim] *= -1
                 hit = True
         if hit:
             # when actually do translation, we should not add the boundary_center inside it!
-            self.currentPos += self.step_vector * self.speed
-            return
+            return self.step_vector * self.speed
 
-        
+        overall_velocity = np.zeros(3)
+        # we add the potential functions for the walls, to avoid objects run towards the tank walls
+        wall_drv_step = d_f(tank_dimensions / 2 - hit_test_pos.coords) + d_f(tank_dimensions / 2 + hit_test_pos.coords)
+        overall_velocity -= wall_drv_step * 0.02
+        # now compute the potential functions between objects
 
-        # the object will move towards it's own step_vector
-        self.currentPos += self.step_vector * self.speed
-        pass
+        self.step_vector += Point(unit_v(overall_velocity))
+        self.step_vector = self.step_vector.normalize()
+
+        # the object will move towards its own step_vector
+        return self.step_vector * self.speed

@@ -48,11 +48,11 @@ class EnvironmentObject:
     def stepForward(self,
                     components,
                     tank_dimensions,
-                    vivarium):
+                    vivarium) -> Point:
         """
         Have this environment object take a step forward in the simulation.
         """
-        return
+        return Point((0, 0, 0))
 
     ##### TODO 4: Eyes on the road!
         # Requirements:
