@@ -80,9 +80,10 @@ class Vivarium(Component):
         self.addNewObjInTank(cod)
 
     def addFood(self):
-        food = Food(self, Point(self.init_fish_food_pos()), self.shaderProg, self._food_size)
-        food.initialize()
-        self.addNewObjInTank(food)
+        for _ in range(6):
+            food = Food(self, Point(self.init_fish_food_pos()), self.shaderProg, self._food_size)
+            food.initialize()
+            self.addNewObjInTank(food)
 
     def animationUpdate(self):
         """
