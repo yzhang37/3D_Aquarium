@@ -647,9 +647,12 @@ class CS680PA3(Component, EnvironmentObject):
         overall_velocity -= wall_drv_step * 0.09
 
         # now compute the potential functions between objects
+        most_junior_level = float('-inf')
         item_to_delete = []
         for comp in components:
             if comp is not self and isinstance(comp, CS680PA3):
+                most_junior_level = max(most_junior_level, comp.food_chain_level)
+
                 # this is another creature
                 new_object_test_pos = comp.currentPos + comp.boundary_center + comp.step_vector * comp.speed
                 dist_vec = new_object_test_pos - hit_test_pos
@@ -662,7 +665,10 @@ class CS680PA3(Component, EnvironmentObject):
                         self.step_vector = self.step_vector.reflect(dist_vec.normalize())
                         self.step_vector = self.step_vector.normalize()
                         return self.step_vector * self.speed, None
-                    elif self.food_chain_level < comp.food_chain_level:
+                    elif self.food_chain_level < comp.food_chain_level and \
+                         comp.food_chain_level == most_junior_level:
+                        # only can kill the creature when the food is the least level
+                        # each time it can only kill one creature
                         item_to_delete.append(comp)
 
                 # chasing and escaping

@@ -7,13 +7,13 @@ Created on 20181028
 
 modified by Daniel Scrivener
 """
+import typing
 
 import numpy as np
 from Point import Point
-from Component import Component
+from Component import Component, CS680PA3
 from ModelTank import Tank
 from EnvironmentObject import EnvironmentObject
-from ModelLinkage import Linkage
 from models import Shark, Salmon, Cod, Food
 
 
@@ -92,8 +92,8 @@ class Vivarium(Component):
         removed_item = set()
 
         # first iterate all the objects
-        for c in self.components[::-1]:
-            if isinstance(c, EnvironmentObject):
+        for c in self.components:
+            if isinstance(c, EnvironmentObject) and c not in removed_item:
                 step, rem_list = c.stepForward(self.components, self.tank_dimensions, self)
                 update_list.append((c, step))
                 if rem_list is not None:
@@ -116,10 +116,19 @@ class Vivarium(Component):
             self.components.remove(obj)
             del obj
 
+    def _sort_cs680(self, component: Component) -> int:
+        if isinstance(component, CS680PA3):
+            return -component.food_chain_level
+        else:
+            return 1000000
+
     def addNewObjInTank(self, newComponent):
         if isinstance(newComponent, Component):
             self.tank.addChild(newComponent)
             self.components.append(newComponent)
+
+            # sort the components each time when a new one is added
+            self.components.sort(key=self._sort_cs680)
         if isinstance(newComponent, EnvironmentObject):
             # add environment components list reference to this new object's
             newComponent.env_obj_list = self.components
