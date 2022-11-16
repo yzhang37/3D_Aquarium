@@ -11,7 +11,8 @@ import typing
 
 import numpy as np
 from Point import Point
-from Component import Component, CS680PA3
+from Component import Component
+from CS680PA3 import CS680PA3
 from ModelTank import Tank
 from EnvironmentObject import EnvironmentObject
 from models import Shark, Salmon, Cod, Food
@@ -56,7 +57,7 @@ class Vivarium(Component):
         shark_size = np.array([1, 1, 1]) * 0.25
         self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
         # add 4 fishes
-        for _ in range(1):
+        for _ in range(2):
             self.addFish()
 
     @staticmethod

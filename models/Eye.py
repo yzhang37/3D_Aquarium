@@ -1,4 +1,5 @@
-from Component import Component, CS680PA3
+from Component import Component
+from CS680PA3 import CS680PA3
 from GLProgram import GLProgram
 from Point import Point
 import typing

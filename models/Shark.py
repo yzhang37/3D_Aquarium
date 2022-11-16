@@ -1,5 +1,5 @@
 import typing
-from Component import CS680PA3
+from CS680PA3 import CS680PA3
 from Shapes import *
 import ColorType as Ct
 import numpy as np

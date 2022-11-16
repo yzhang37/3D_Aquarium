@@ -2,7 +2,7 @@ import typing
 
 
 import ColorType as Ct
-from Component import CS680PA3
+from CS680PA3 import CS680PA3
 from Shapes import *
 from models.Eye import Eye
 import models.Utility as Utility
