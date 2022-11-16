@@ -39,7 +39,7 @@ class Food(CS680PA3):
         # if sink to the bottom, then remove it
         hit_test_pos = self.currentPos + self.boundary_center + self.step_vector * self.speed
         tank_height = tank_dimensions[1]
-        if hit_test_pos.coords[1] < -tank_height / 2 + self.boundary_radius:
+        if hit_test_pos.coords[1] < -tank_height / 2.162 + self.boundary_radius:
             return Point((0, 0, 0)), None
         else:
             return self.step_vector * self.speed, None

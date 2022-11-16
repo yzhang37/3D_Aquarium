@@ -641,20 +641,21 @@ class CS680PA3(Component, EnvironmentObject):
         # this is the highest priority. If hit, we no longer do any more test.
         hit_test_pos = self.currentPos + self.boundary_center + self.step_vector * self.speed
         tank_dimensions = np.array(tank_dimensions)
-        # hit = False
-        # for dim in range(3):
-        #     if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
-        #             hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
-        #         self.step_vector.coords[dim] *= -1
-        #         hit = True
-        # if hit:
-        #     # when actually do translation, we should not add the boundary_center inside it!
-        #     return self.step_vector * self.speed, None
+
+        hit = False
+        for dim in range(3):
+            if hit_test_pos.coords[dim] > tank_dimensions[dim] / 2 - self.boundary_radius or \
+                    hit_test_pos.coords[dim] < -tank_dimensions[dim] / 2 + self.boundary_radius:
+                self.step_vector.coords[dim] *= -1
+                hit = True
+        if hit:
+            # when actually do translation, we should not add the boundary_center inside it!
+            return self.step_vector * self.speed, None
 
         overall_velocity = np.zeros(3)
         # we add the potential functions for the walls, to avoid objects run towards the tank walls
-        wall_drv_step = d_upper_bound(30, 3.4012, hit_test_pos.coords - tank_dimensions / 2)
-        wall_drv_step += d_lower_bound(30, 3.4012, hit_test_pos.coords + tank_dimensions / 2)
+        wall_drv_step = d_upper_bound(30, 3.4012, hit_test_pos.coords - tank_dimensions / 2.162)
+        wall_drv_step += d_lower_bound(30, 3.4012, hit_test_pos.coords + tank_dimensions / 2.162)
         overall_velocity -= wall_drv_step * 0.09
 
         # now compute the potential functions between objects
@@ -674,9 +675,7 @@ class CS680PA3(Component, EnvironmentObject):
                 if dist < self.boundary_radius + comp.boundary_radius:
                     # if the food chain level is equal:
                     if self.food_chain_level == comp.food_chain_level:
-                        self.step_vector = self.step_vector.reflect(dist_vec.normalize())
-                        self.step_vector = self.step_vector.normalize()
-                        return self.step_vector * self.speed, None
+                        overall_velocity += self.step_vector.reflect(dist_vec.normalize()).coords * 0.3
                     elif self.food_chain_level < comp.food_chain_level == most_junior_level:
                         # only can kill the creature when the food is the least level
                         # each time it can only kill one creature
