@@ -538,6 +538,17 @@ def d_upper_bound(n: float, log_n: float, x: np.ndarray) -> np.ndarray:
     return log_n * (n ** x)
 
 
+def d_gravity(a: float, b: float, x: np.ndarray) -> np.ndarray:
+    # potential functions for mimic gravity boids.
+    # df(x) = - a / x + b
+    # b: limit point
+    # a / b should be the place you want to cross the 0
+    sign_x = np.sign(x)
+    result = b - a / np.abs(x)
+    result *= sign_x
+    return result
+
+
 def d_dist(x: np.ndarray) -> np.ndarray:
     # y = 1 / np.exp(x ** 2)
     return -2 * x * np.exp(-x ** 2)
@@ -649,6 +660,7 @@ class CS680PA3(Component, EnvironmentObject):
         # now compute the potential functions between objects
         most_junior_level = float('-inf')
         item_to_delete = []
+
         for comp in components:
             if comp is not self and isinstance(comp, CS680PA3):
                 most_junior_level = max(most_junior_level, comp.food_chain_level)
@@ -665,16 +677,21 @@ class CS680PA3(Component, EnvironmentObject):
                         self.step_vector = self.step_vector.reflect(dist_vec.normalize())
                         self.step_vector = self.step_vector.normalize()
                         return self.step_vector * self.speed, None
-                    elif self.food_chain_level < comp.food_chain_level and \
-                         comp.food_chain_level == most_junior_level:
+                    elif self.food_chain_level < comp.food_chain_level == most_junior_level:
                         # only can kill the creature when the food is the least level
                         # each time it can only kill one creature
                         item_to_delete.append(comp)
 
-                # chasing and escaping
-                if self.food_chain_level < comp.food_chain_level:
+                # boids movement
+                if self.food_chain_level == comp.food_chain_level:
+                    # mimic universal gravity
+                    overall_velocity -= d_gravity(
+                        0.5 * 3 * self.boundary_radius, 0.5,
+                        hit_test_pos.coords - new_object_test_pos.coords) * 0.01
+                elif self.food_chain_level < comp.food_chain_level:
                     # chasing
-                    overall_velocity += d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.05
+                    if comp.food_chain_level == most_junior_level:
+                        overall_velocity += d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.05
                 elif self.food_chain_level > comp.food_chain_level:
                     # escaping
                     overall_velocity -= d_dist(hit_test_pos.coords - new_object_test_pos.coords) * 0.04

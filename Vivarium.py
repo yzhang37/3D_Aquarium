@@ -56,7 +56,7 @@ class Vivarium(Component):
         shark_size = np.array([1, 1, 1]) * 0.25
         self.addNewObjInTank(Shark(self, Point((0, 0, 0)), shaderProg, shark_size))
         # add 4 fishes
-        for _ in range(2):
+        for _ in range(1):
             self.addFish()
 
     @staticmethod
