@@ -8,10 +8,9 @@ Created on Nov 1, 2018
 modified by Daniel Scrivener 08/2022
 '''
 
-import math
+
 from Point import Point
-from Quaternion import Quaternion
-import numpy as np
+from typing import *
 
 
 class EnvironmentObject:
@@ -43,26 +42,30 @@ class EnvironmentObject:
         """
         Perform the next frame of this environment object's animation.
         """
-        self.update()
+        pass
 
-    def stepForward(self):
+    def stepForward(self,
+                    components,
+                    tank_dimensions,
+                    vivarium) -> Tuple[Point,
+                                       Optional[List["EnvironmentObject"]]]:
         """
-        Have this environment object take a step forward in the simulation.
-        """
-        return
 
-    ##### TODO 4: Eyes on the road!
+        :param components:
+        :param tank_dimensions:
+        :param vivarium:
+        :return: The step forward vector, and a list of items to be removed.
+        """
+        return Point((0, 0, 0)), None
+
+    ##### Eyes on the road!
         # Requirements:
         #   1. Creatures should face in the direction they are moving. For instance, a fish should be facing the
         #   direction in which it swims. Remember that we require your creatures to be movable in 3 dimensions,
         #   so they should be able to face any direction in 3D space.
         
-    def rotateDirection(self, v1, v2):
+    def rotateDirection(self):
         """
         change this environment object's orientation from v1 to v2.
-        :param v1: current facing direction
-        :type v1: Point
-        :param v2: targeted facing direction
-        :type v2: Point
         """
-        self.setPostRotation(np.identity(4))
+        pass

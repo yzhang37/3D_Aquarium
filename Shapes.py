@@ -5,12 +5,18 @@ Modified by Daniel Scrivener 07/2022
 """
 
 from time import time_ns
+from typing import Union, List, Tuple
+
 from collada import *
 from DisplayableMesh import DisplayableMesh
 from Component import Component
 import GLUtility
 import ColorType
 import numpy as np
+
+from GLProgram import GLProgram
+from Point import Point
+
 
 def getVertexData(filename):
 
@@ -40,12 +46,19 @@ def getVertexData(filename):
 
     return (vertices, indices)
 
+
 class Shape(Component):
     vertexData = None
     indexData = None
     mesh = None
 
-    def __init__(self, position, shaderProg, scale, vertexData, indexData, color=ColorType.YELLOW):
+    def __init__(self,
+                 position: Point,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 vertexData,
+                 indexData,
+                 color: ColorType.ColorType = ColorType.YELLOW):
         """
         :param position: location of the object
         :type position: Point
@@ -64,6 +77,7 @@ class Shape(Component):
         self.mesh = DisplayableMesh(shaderProg, scale, vertexData, indexData, color)
         super(Shape, self).__init__(position, self.mesh)
 
+
 class Cone(Shape):
 
     pathname = "assets/cone0.dae"
@@ -75,7 +89,12 @@ class Cone(Shape):
     indices = data[1]
     indicesLP = dataLP[1]
 
-    def __init__(self, position, shaderProg, scale, color=ColorType.YELLOW, lowPoly=True):
+    def __init__(self,
+                 position: Point,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 color: ColorType.ColorType = ColorType.YELLOW,
+                 lowPoly=True):
         """
         :param position: location of the object
         :type position: Point
@@ -99,6 +118,7 @@ class Cone(Shape):
         self.inRotation = tIn
         self.outRotation = tOut
 
+
 class Cube(Shape):
 
     pathname = "assets/cube0.dae"
@@ -106,7 +126,11 @@ class Cube(Shape):
     vertices = data[0]
     indices = data[1]
 
-    def __init__(self, position, shaderProg, scale, color=ColorType.RED):
+    def __init__(self,
+                 position: Point,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 color: ColorType.ColorType = ColorType.RED):
         """
         :param position: location of the object
         :type position: Point
@@ -126,6 +150,7 @@ class Cube(Shape):
         self.inRotation = tIn
         self.outRotation = tOut
 
+
 class Cylinder(Shape):
 
     pathname = "assets/cylinder0.dae"
@@ -137,7 +162,12 @@ class Cylinder(Shape):
     indices = data[1]
     indicesLP = dataLP[1]
 
-    def __init__(self, position, shaderProg, scale, color=ColorType.GREEN, lowPoly=True):
+    def __init__(self,
+                 position: Point,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 color: ColorType.ColorType = ColorType.GREEN,
+                 lowPoly=True):
         """
         :param position: location of the object
         :type position: Point
@@ -160,6 +190,7 @@ class Cylinder(Shape):
         self.inRotation = tIn
         self.outRotation = tOut
 
+
 class Sphere(Shape):
 
     pathname = "assets/sphere0.dae"
@@ -171,7 +202,13 @@ class Sphere(Shape):
     indices = data[1]
     indicesLP = dataLP[1]
 
-    def __init__(self, position, shaderProg, scale, color=ColorType.BLUE, limb=True, lowPoly=True):
+    def __init__(self,
+                 position: Point,
+                 shaderProg: GLProgram,
+                 scale: Union[List[float], Tuple[float, float, float], np.ndarray],
+                 color: ColorType.ColorType = ColorType.BLUE,
+                 limb=True,
+                 lowPoly=True):
         """
         :param position: location of the object
         :type position: Point

@@ -144,9 +144,12 @@ class Sketch(CanvasBase):
     def resetView(self):
         self.lookAtPt = [0, 0, 0]
         self.upVector = [0, 1, 0]
-        self.cameraDis = 12
-        self.cameraPhi = math.pi / 6
-        self.cameraTheta = math.pi / 2
+        # self.cameraDis = 12
+        # self.cameraPhi = math.pi / 6
+        # self.cameraTheta = math.pi / 2
+        self.cameraDis = 7.8
+        self.cameraPhi = 0.013598775598303803
+        self.cameraTheta = 0.900796326794896
 
     def InitGL(self):
         # self.texture = Texture()
@@ -364,6 +367,15 @@ class Sketch(CanvasBase):
             # reset viewing angle
             self.viewing_quaternion = Quaternion()
             self.update()
+        elif chr(keycode) in "pP":
+            print(self.cameraPhi)
+            print(self.cameraTheta)
+        elif chr(keycode) in "aA":
+            self.vivarium.addFish()
+            self.update()
+        elif chr(keycode) in "fF":
+            self.vivarium.addFood()
+            self.update()
 
 
 if __name__ == "__main__":
@@ -372,7 +384,7 @@ if __name__ == "__main__":
     # Set FULL_REPAINT_ON_RESIZE will repaint everything when scaling the frame,
     # here is the style setting for it: wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE
     # Resize disabled in this one
-    frame = wx.Frame(None, size=(500, 500), title="Test",
+    frame = wx.Frame(None, size=(500, 500), title="3D Vivarium",
                      style=wx.DEFAULT_FRAME_STYLE | wx.FULL_REPAINT_ON_RESIZE)  # Disable Resize: ^ wx.RESIZE_BORDER
     canvas = Sketch(frame)
 

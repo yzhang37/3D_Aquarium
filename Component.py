@@ -8,14 +8,12 @@ First version in 11/01/2021
 Modified by Daniel Scrivener 07/2022
 """
 import copy
-import math
 import os
-from typing import Tuple, Type
 
 import numpy as np
 from PIL import Image
 
-import GLBuffer
+from GLProgram import GLProgram
 from Point import Point
 from ColorType import ColorType
 from Displayable import Displayable
@@ -124,8 +122,8 @@ class Component:
             self.default_color = display_obj.defaultColor
             self.current_color = display_obj.defaultColor
         else:
-            self.default_color = np.array([1.,1.,1.])
-            self.current_color = np.array([1.,1.,1.])
+            self.default_color = np.array([1., 1., 1.])
+            self.current_color = np.array([1., 1., 1.])
         self.defaultPos = position.copy()
         self.currentPos = position.copy()
         self.displayObj = display_obj
@@ -177,7 +175,7 @@ class Component:
         # use init value to generate transformation matrix for all children
         self.update()
 
-    def draw(self, shaderProg):
+    def draw(self, shaderProg: GLProgram):
         shaderProg.setMat4("modelMat", self.transformationMat.transpose())
         shaderProg.setVec3("currentColor", self.current_color)
         if isinstance(self.displayObj, Displayable):
@@ -264,12 +262,20 @@ class Component:
         if mode in ["position", "all"]:
             self.currentPos = self.defaultPos
         if mode in ["scale", "all"]:
-            self.currentScaling = copy.deepcopy(self.defaultScaling)
+            self.setCurrentScale(self.defaultScaling, check=False)
         if mode in ["rotationAxis", "all"]:
             self.setPreRotation(np.identity(4, dtype=np.double))
             self.setU([1, 0, 0])
             self.setV([0, 1, 0])
             self.setW([0, 0, 1])
+
+    def setRotateExtents(self, uMin, uMax, vMin, vMax, wMin, wMax):
+        """
+        Factory function to set all the rotation extents
+        """
+        self.setRotateExtent(self.uAxis, uMin, uMax)
+        self.setRotateExtent(self.vAxis, vMin, vMax)
+        self.setRotateExtent(self.wAxis, wMin, wMax)
 
     def setRotateExtent(self, axis, minDeg=None, maxDeg=None):
         """
@@ -318,7 +324,7 @@ class Component:
             result = max(result, low_bound)
         return result
 
-    def setTexture(self, shaderProg, imgFilePath, textureOn=True):
+    def setTexture(self, shaderProg: GLProgram, imgFilePath, textureOn=True):
         # apply texturek
         if not os.path.isfile(imgFilePath):
             raise TypeError("Image File doesn't exist")
@@ -380,15 +386,16 @@ class Component:
         :param scale: default scaling along three axes
         :return: None
         """
-        if not isinstance(scale, list) and not isinstance(scale, tuple):
-            raise TypeError("default scale should be list or tuple")
-        if len(scale) != 3:
+        if not isinstance(scale, list) and not isinstance(scale, tuple) and not isinstance(scale, np.ndarray):
+            raise TypeError("default scale should be list or tuple or np.ndarray")
+        if isinstance(scale, np.ndarray):
+            if len(scale.shape) != 1 or scale.shape[0] != 3:
+                raise TypeError("default scale should consists of scaling on 3 axis")
+            scale = scale.tolist()
+        elif len(scale) != 3:
             raise TypeError("default scale should consists of scaling on 3 axis")
-        """if min(scale) != max(scale):
-            raise ValueError("Component only accept uniform scaling")"""
         self.defaultScaling = copy.deepcopy(scale)
-        self.currentScaling = copy.deepcopy(self.defaultScaling)
-        self.update()
+        self.setCurrentScale(self.defaultScaling, check=False)
 
     def setDefaultColor(self, color):
         """
@@ -430,18 +437,20 @@ class Component:
         else:
             raise TypeError(f"color should have type ColorType, Tuple, or list, not {type(color)}")
 
-    def setCurrentScale(self, scale):
+    def setCurrentScale(self, scale, check: bool = True):
         """
         Set scaling along three axes
+        :param check:
         :param scale: scaling along three axes
         :return: None
         """
-        if not isinstance(scale, list) and not isinstance(scale, tuple):
-            raise TypeError("current scale should be list or tuple")
-        if len(scale) != 3:
-            raise TypeError("current scale should consists of scaling on 3 axis")
-        if min(scale) != max(scale):
-            raise ValueError("Component only accept uniform scaling")
+        if check:
+            if not isinstance(scale, list) and not isinstance(scale, tuple):
+                raise TypeError("current scale should be list or tuple")
+            if len(scale) != 3:
+                raise TypeError("current scale should consists of scaling on 3 axis")
+            if min(scale) != max(scale):
+                raise ValueError("Component only accept uniform scaling")
         self.currentScaling = copy.deepcopy(scale)
         self.update()
 
@@ -492,7 +501,7 @@ class Component:
             raise TypeError("axis should have the same size as the current one")
         for i in range(len(w)):
             self.wAxis[i] = w[i]
-    
+
     def setQuaternion(self, q):
         """ sets a quaternion for rotation """
         if not isinstance(q, Quaternion):
@@ -502,3 +511,4 @@ class Component:
     def clearQuaternion(self):
         """ clears the existing quaternion """
         self.quat = None
+

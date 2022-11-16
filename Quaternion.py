@@ -8,6 +8,8 @@ import time
 import math
 import numpy as np
 
+from Point import Point
+
 
 class Quaternion:
     """
@@ -18,7 +20,7 @@ class Quaternion:
     # vector components of this quaternion
     v = None
 
-    def __init__(self, s=1, v0=0, v1=0, v2=0):
+    def __init__(self, s: float = 1, v0: float = 0, v1: float = 0, v2: float = 0):
         self.v = [0, 0, 0]
         self.set(s, v0, v1, v2)
 
@@ -42,7 +44,7 @@ class Quaternion:
         self.v[1] = v1
         self.v[2] = v2
 
-    def multiply(self, q):
+    def multiply(self, q) -> "Quaternion":
         """
         multiply with another Quaternion and return a new quaternion
 
@@ -58,6 +60,28 @@ class Quaternion:
         new_v1 = (self.s * q.v[1]) + (q.s * self.v[1]) + (self.v[2] * q.v[0] - self.v[0] * q.v[2])
         new_v2 = (self.s * q.v[2]) + (q.s * self.v[2]) + (self.v[0] * q.v[1] - self.v[1] * q.v[0])
         return Quaternion(new_s, new_v0, new_v1, new_v2)
+
+    def multiplyPoint(self, point: Point) -> Point:
+        """
+        multiply a vector (Point) with this quaternion,
+        and return a new Point object (ignore the scalar part of this quaternion)
+        :param point: Point
+        :return: a new Point
+        """
+        d = point.coords
+        q2 = Quaternion(0, d[0], d[1], d[2])
+        q = self.multiply(q2)
+        q = q.multiply(self.conjugate())
+        return Point(q.v[0], q.v[1], q.v[2])
+
+    def conjugate(self) -> "Quaternion":
+        """
+        conjugate of this quaternion
+
+        :return: a new Quaternion
+        :rtype: Quaternion
+        """
+        return Quaternion(self.s, -self.v[0], -self.v[1], -self.v[2])
 
     def norm(self):
         """
@@ -114,6 +138,25 @@ class Quaternion:
         q_matrix[2, 2] = 1 - 2 * a * a - 2 * b * b
         q_matrix[3, 3] = 1
         return q_matrix
+
+    def __repr__(self):
+        return f"Quaternion({self.s}, ({self.v[0]}, {self.v[1]}, {self.v[2]}))"
+
+    @staticmethod
+    def axisAngleToQuaternion(axis: Point, angle: float) -> "Quaternion":
+        """
+        turn axis and angle to Quaternion
+        :param axis: Point
+        :param angle: float
+        :return: a new Quaternion
+        :rtype: Quaternion
+        """
+        if not isinstance(axis, Point):
+            raise TypeError("axis must be a Point")
+        axis = axis.normalize().coords
+        angle = angle / 2
+        sin_val = math.sin(angle)
+        return Quaternion(math.cos(angle), axis[0] * sin_val, axis[1] * sin_val, axis[2] * sin_val)
 
 
 if __name__ == "__main__":
