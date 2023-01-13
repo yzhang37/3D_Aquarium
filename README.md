@@ -1,9 +1,5 @@
 # 3D Vivarium README
 
-Student Name: **Zhenghang Yin**
-
-Student ID: **U82871437**
-
 ## 1. Overview
 
 This program uses OpenGL as the underlying platform to depict an amazing platform to display a wonderful vivarium (aquarium). In the aquarium there're three kinds of creatures: Sharks, Cods and Salmons. The Shark is the grey predator, which will keep hunting for smaller fishes. Cods and Salmons will keep escaping from the shark, while eating the food.
