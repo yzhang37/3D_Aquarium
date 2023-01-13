@@ -22,7 +22,18 @@ The techniques used in this vivarium include but are not limited to the followin
 
 *   Shark will try not to eat the fish until all the food has been eaten.
 
-## 2. How to
+## 2. Instructions for running the program:
+
+1. First, please install version 3.8 of Python or install Anaconda/Miniconda.
+   - If you choose conda, please use `conda create -n GRAPHICS` after installation to create an environment named GRAPHICS. Then use `conda activate GRAPHICS` to enter that environment.
+2. Use `pip install -r requirements.txt` to install the required packages: PyOpenGL, WxPython, and Numpy.
+3. Run the program by executing the command `pythonw Sketch.py`
+
+   > On Mac, please use `python.app`.
+
+If you encounter any problems during the run, please submit an Issue.
+
+---
 
 Run the program and the window will show. By default there will be two salmons(red), two cods (golden) and one shark (gray).
 
